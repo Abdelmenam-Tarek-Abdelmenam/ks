@@ -1,15 +1,35 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dio/dio.dart';
 
 import '../../../domain_layer/repository_implementer/error_state.dart';
 
+const _baseUrl = "https://api.example.com";
 
-class MongoDatabase {
-  static MongoDatabase? _instance;
-  static MongoDatabase get instance => _instance ??= MongoDatabase();
+class DioDatabase {
+  final Dio _dio =Dio(
+    BaseOptions(
+      baseUrl: _baseUrl,
+      connectTimeout: const Duration(milliseconds:5000),
+      receiveTimeout: const Duration(milliseconds:5000),
+      headers: {
+        'Accept': 'application/json',
+      },
+    ),
+  );
 
   Future<void> init() async {
     if (await Connectivity().isNotConnected()) return;
+  }
 
+  void makeRequest(String getDirectory) async {
+    try {
+      final response = await _dio.get(
+        '/$getDirectory',
+        );
+      print(response.data);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> addUser(Map<String, dynamic> userData) async {
@@ -104,6 +124,9 @@ class MongoDatabase {
     await _preCheck();
 
   }
+
+
+
 
   Future<void> _preCheck() async {
     if (await Connectivity().isNotConnected()) {
