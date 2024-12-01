@@ -17,9 +17,9 @@ import '../../../shared/widget/error_image.dart';
 import '../../../shared/widget/loading_text.dart';
 
 class StoreView extends StatelessWidget {
-  StoreView({Key? key}) : super(key: key);
-  ShowData<Product> products = ShowData(dummyProducts);
-  List<OfferItem> offers = dummyOffers;
+  StoreView({super.key});
+ final ShowData<Product> products = ShowData(dummyProducts);
+ final List<OfferItem> offers = dummyOffers;
 
   @override
   Widget build(BuildContext context) {

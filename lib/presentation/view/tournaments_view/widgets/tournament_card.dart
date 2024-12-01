@@ -7,7 +7,7 @@ import '../../../resources/styles_manager.dart';
 import '../../../shared/widget/error_image.dart';
 
 class TournamentCard extends StatelessWidget {
-  const TournamentCard(this.item, {Key? key}) : super(key: key);
+  const TournamentCard(this.item, {super.key});
   final Tournament item;
 
   @override

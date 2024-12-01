@@ -1,11 +1,7 @@
 import 'package:final_projects/presentation/shared/custom_scafffold/widgets/gradient_container.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-
-import '../../resources/string_manager.dart';
 import '../../resources/styles_manager.dart';
-import '../../resources/theme/theme_manager.dart';
 
 const double panelHeight = 25;
 
@@ -19,8 +15,7 @@ class SlidingScaffold extends StatelessWidget {
       this.action,
       this.tabs,
       this.showSliding = true,
-      Key? key})
-      : super(key: key);
+      super.key});
   final Widget child;
   final bool showSliding;
   final Widget? floatingActionButton;

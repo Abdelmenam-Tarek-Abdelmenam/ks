@@ -7,7 +7,6 @@ import '../../../bloc/matches_bloc/matches_bloc.dart';
 import '../../../bloc/status.dart';
 import '../../resources/string_manager.dart';
 import '../../shared/custom_scafffold/sliding_scaffold.dart';
-import '../../shared/widget/error_widget.dart';
 import '../../shared/widget/loading_text.dart';
 import 'widgets/grounds.dart';
 
@@ -29,7 +28,7 @@ class MatchesView extends StatelessWidget {
             enablePullUp: false,
             header: const WaterDropHeader(),
             onRefresh: () {
-              PlayBloc bloc = context.read<PlayBloc>();
+              // PlayBloc bloc = context.read<PlayBloc>();
                   // bloc.add(const GetGroundsEvent());
 
             },
@@ -42,15 +41,15 @@ class MatchesView extends StatelessWidget {
                     if (state.type == MatchesViewType.grounds) {
                       switch (state.groundStatus) {
                         case BlocStatus.idle:
-                          return GroundsWidget(state.grounds);
+                          return GroundsWidget();
                         case BlocStatus.gettingData:
                           return const LoadingText();
                         case BlocStatus.getData:
                           endRefresh();
-                          return GroundsWidget(state.grounds);
+                          return GroundsWidget();
                         case BlocStatus.error:
                           endRefresh();
-                          return GroundsWidget(state.grounds);
+                          return GroundsWidget();
                           // return const ErrorView();
                       }
                     } else if (state.type == MatchesViewType.active) {

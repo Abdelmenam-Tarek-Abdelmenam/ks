@@ -12,12 +12,11 @@ import '../../../shared/widget/dividers.dart';
 import '../../../shared/widget/rating_icons.dart';
 
 class GroundsWidget extends StatelessWidget {
-   GroundsWidget(this.grounds, {super.key});
-   ShowData<Ground> grounds ;
+   GroundsWidget({super.key});
+   final ShowData<Ground> grounds =ShowData<Ground>(dummyGrounds);
 
   @override
   Widget build(BuildContext context) {
-    grounds = ShowData<Ground>(dummyGrounds);
     return grounds.isEmpty
         ? noGrounds(context)
         : Wrap(

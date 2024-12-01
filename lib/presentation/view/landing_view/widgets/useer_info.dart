@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 
 import '../../../../bloc/auth_bloc/auth_status_bloc.dart';
-import '../../../resources/string_manager.dart';
 import '../../../shared/widget/avatar.dart';
 
 class UserInfo extends StatelessWidget {

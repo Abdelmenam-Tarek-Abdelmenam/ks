@@ -2,7 +2,6 @@ import 'package:either_dart/either.dart';
 import '../../data/models/matches.dart';
 import '../../bloc/auth_bloc/auth_status_bloc.dart';
 
-import '../../data/data_sources/web_services/api_repository.dart';
 import '../../data/models/show_data.dart';
 
 import 'error_state.dart';

@@ -1,40 +1,44 @@
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
-
 import '../../../domain_layer/repository_implementer/error_state.dart';
 
-const _baseUrl = "https://api.example.com";
+const _baseUrl = "http://192.168.30.201/KS_API";
+const _userDirectory = "user";
+const _signUpTarget = "signup";
+const _logInTarget = "login";
 
 class DioDatabase {
-  final Dio _dio =Dio(
-    BaseOptions(
-      baseUrl: _baseUrl,
-      connectTimeout: const Duration(milliseconds:5000),
-      receiveTimeout: const Duration(milliseconds:5000),
-      headers: {
-        'Accept': 'application/json',
-      },
-    ),
-  );
+  var dio = Dio();
 
   Future<void> init() async {
     if (await Connectivity().isNotConnected()) return;
   }
 
-  void makeRequest(String getDirectory) async {
-    try {
-      final response = await _dio.get(
-        '/$getDirectory',
-        );
-      print(response.data);
-    } catch (e) {
-      print(e);
+  Future<Map<String, dynamic>> makeRequest(
+      {required String directory,
+      required String target,
+      required Map<String, dynamic> data}) async {
+    var response = await dio.request(
+      '$_baseUrl/$directory/$target.php',
+      options: Options(
+        method: 'POST',
+      ),
+      data: data,
+    );
+
+    if (response.statusCode == 200) {
+      return response.data;
+    } else {
+      return {};
     }
+
   }
 
   Future<void> addUser(Map<String, dynamic> userData) async {
     await _preCheck();
-
+    makeRequest(
+        directory: _userDirectory, target: _signUpTarget, data: userData);
   }
 
   Future<Map<String, dynamic>?> getUser(String id) async {
@@ -45,12 +49,10 @@ class DioDatabase {
 
   Future<void> setUserAvailable(String id, int? state) async {
     await _preCheck();
-
   }
 
   Future<int?> getUserAvailable(String id) async {
     await _preCheck();
-
 
     return 1;
   }
@@ -58,7 +60,7 @@ class DioDatabase {
   Future<Map<String, dynamic>?> getUserAvailability(String id) async {
     await _preCheck();
 
-    return{};
+    return {};
   }
 
   Future<List<Map<String, dynamic>?>> getRankedUser() async {
@@ -102,14 +104,12 @@ class DioDatabase {
     await _preCheck();
 
     return [{}];
-
   }
 
   Future<List<Map<String, dynamic>?>> getGyms(int start, int end) async {
     await _preCheck();
 
     return [{}];
-
   }
 
   Future<List<Map<String, dynamic>?>> getBenfits(
@@ -117,22 +117,16 @@ class DioDatabase {
     await _preCheck();
 
     return [{}];
-
   }
 
   Future<void> sendMessage(Map<String, dynamic> userData) async {
     await _preCheck();
-
   }
-
-
-
 
   Future<void> _preCheck() async {
     if (await Connectivity().isNotConnected()) {
       throw const Failure("No Internet connection");
     }
-
   }
 }
 

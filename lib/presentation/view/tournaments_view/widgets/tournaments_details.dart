@@ -4,7 +4,6 @@ import 'package:final_projects/data/models/tournament.dart';
 import 'package:final_projects/presentation/resources/routes_manger.dart';
 import 'package:final_projects/presentation/resources/styles_manager.dart';
 import 'package:final_projects/presentation/resources/theme/theme_manager.dart';
-import 'package:final_projects/presentation/shared/details_widget.dart';
 import 'package:final_projects/presentation/shared/widget/error_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

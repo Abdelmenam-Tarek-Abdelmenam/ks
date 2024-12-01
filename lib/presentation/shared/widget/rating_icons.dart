@@ -4,7 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'gradient_icon.dart';
 
 class RatingIcons extends StatelessWidget {
-  const RatingIcons(this.rate, {Key? key}) : super(key: key);
+  const RatingIcons(this.rate, {super.key});
   final double rate;
 
   @override

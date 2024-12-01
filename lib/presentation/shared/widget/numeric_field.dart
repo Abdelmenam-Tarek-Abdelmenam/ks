@@ -6,8 +6,7 @@ class NumericField extends StatelessWidget {
   final TextEditingController controller;
   final Function(String value)? onChange;
   final String? title;
-  const NumericField(this.controller, {this.title, this.onChange, Key? key})
-      : super(key: key);
+  const NumericField(this.controller, {this.title, this.onChange, super.key});
 
   @override
   Widget build(BuildContext context) {

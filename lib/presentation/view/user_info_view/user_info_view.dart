@@ -128,14 +128,9 @@ class UserInfoView extends StatelessWidget {
     }
   }
 
-  //   int? weight;
-  //   int? height;
-  //   bool? playedBefore;
-  //  String? experience;
-  //  String? startPlaying;
   PlayType? playType = AuthBloc.user.playType;
-
   bool playedBefore = false;
+
   Widget sportsInfo(BuildContext context) => Column(
         children: [
           SizedBox(

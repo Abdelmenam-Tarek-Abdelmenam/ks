@@ -6,7 +6,7 @@ import '../../../../data/models/tournament.dart';
 
 
 class TournamentsList extends StatelessWidget {
-  const TournamentsList(this.tournaments, {Key? key}) : super(key: key);
+  const TournamentsList(this.tournaments, {super.key});
   final ShowData<Tournament> tournaments;
 
   @override

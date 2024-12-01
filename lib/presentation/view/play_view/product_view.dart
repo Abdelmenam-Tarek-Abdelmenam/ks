@@ -82,10 +82,10 @@ class ProductView extends StatelessWidget {
                             .withOpacity(0.7),
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(30))),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         "احجز الان",
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white),
                       ),
                     )),
               ),

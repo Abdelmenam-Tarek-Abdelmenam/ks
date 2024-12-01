@@ -14,7 +14,7 @@ import '../../../shared/widget/dividers.dart';
 const String phoneUrl = "tel://+201201838240";
 
 class ContactsIcons extends StatelessWidget {
-  ContactsIcons({Key? key}) : super(key: key);
+  ContactsIcons({super.key});
 
   final String emailLink =
       "mailto:moneam.elbahy@gmail.com?subject=${Uri.encodeComponent("Customer Service")}&body=${Uri.encodeComponent("Hello key of success i want to Email with you")}";

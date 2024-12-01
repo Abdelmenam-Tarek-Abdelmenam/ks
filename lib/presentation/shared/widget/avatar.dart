@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'error_image.dart';
 
 class Avatar extends StatelessWidget {
-  const Avatar(this.url, {this.width, Key? key}) : super(key: key);
+  const Avatar(this.url, {this.width, super.key});
   final String url;
   final double? width;
 

@@ -1,6 +1,4 @@
 import 'package:either_dart/either.dart';
-
-
 import '../../data/models/app_user.dart';
 import '../../data/repositories/auth_repository.dart';
 import 'error_state.dart';
@@ -74,7 +72,7 @@ class SigningRepository {
     }
 
     try {
-      Map<String, dynamic> data = user.toJson;
+      // Map<String, dynamic> data = user.toJson;
       return const Right(null);
     } catch (_) {
       return const Left(Failure("Error happened while register user"));
@@ -82,7 +80,7 @@ class SigningRepository {
   }
 
   Future<AppUser> getUser(AppUser user) async {
-    Map<String, dynamic>? userData;
+    Map<String, dynamic>? userData ;
     return (userData == null
         ? AppUser.empty()
         : AppUser.fromJson(userData));

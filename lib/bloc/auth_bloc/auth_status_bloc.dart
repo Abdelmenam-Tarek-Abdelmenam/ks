@@ -9,7 +9,6 @@ import '../../data/models/app_user.dart';
 import '../../domain_layer/repository_implementer/error_state.dart';
 import '../../domain_layer/repository_implementer/sigining_repo.dart';
 import '../../presentation/resources/string_manager.dart';
-import '../../presentation/shared/toast_helper.dart';
 
 part 'auth_status_event.dart';
 part 'auth_status_state.dart';

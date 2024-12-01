@@ -1,6 +1,3 @@
-
-import 'app_user.dart';
-
 class Ground {
   String name;
   String address;

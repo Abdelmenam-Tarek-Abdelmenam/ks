@@ -1,8 +1,6 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import '../../presentation/resources/string_manager.dart';
 
 class AppUser {
   final String id;

@@ -60,8 +60,7 @@ class FacilitiesList extends StatelessWidget {
 }
 
 class AddressBox extends StatelessWidget {
-  const AddressBox(this.address, this.lat, this.lon, {Key? key})
-      : super(key: key);
+  const AddressBox(this.address, this.lat, this.lon, {super.key});
   final String address;
   final double lat;
   final double lon;

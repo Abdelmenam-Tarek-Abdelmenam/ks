@@ -8,7 +8,7 @@ import 'widgets/contact_icons.dart';
 import 'widgets/info_widget.dart';
 
 class CustomerSupportView extends StatelessWidget {
-  const CustomerSupportView({Key? key}) : super(key: key);
+  const CustomerSupportView({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,15 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
-
-import '../../../../bloc/status.dart';
 import '../../../resources/asstes_manager.dart';
 import '../../../resources/styles_manager.dart';
 import '../../../shared/widget/dividers.dart';
 
 class InfoWidget extends StatefulWidget {
-  const InfoWidget({Key? key}) : super(key: key);
+  const InfoWidget({super.key});
 
   @override
   State<InfoWidget> createState() => _InfoWidgetState();
