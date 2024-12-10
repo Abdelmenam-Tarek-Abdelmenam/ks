@@ -1,5 +1,7 @@
 
-import '../../data/repositories/auth_repository.dart';
+import 'package:final_projects/data/data_sources/web_services/errormessage.dart';
+import 'package:final_projects/data/dio_errors.dart';
+
 import '../../presentation/shared/toast_helper.dart';
 
 class Failure implements Exception {
@@ -10,9 +12,14 @@ class Failure implements Exception {
   ]);
 
   factory Failure.fromError(Exception exception) {
-    if (exception is FireBaseAuthErrors) {
+    if (exception is SignUpErrors) {
       return Failure(exception.message);
-    } else if (exception is Failure) {
+    }else if (exception is LoginErrors) {
+      return Failure(exception.message);
+    }else if (exception is DioErrors) {
+      return Failure(exception.message);
+    }
+    else if (exception is Failure) {
       return exception;
     } else {
       return const Failure();

@@ -23,6 +23,7 @@ void main() async {
   Bloc.observer = MyBlocObserver();
 
   String? userData = PreferenceRepository.getData(key: PreferenceKey.userData);
+  print(userData);
   AppUser? user =
       userData == null ? null : AppUser.fromJson(json.decode(userData));
   runApp(MyApp(user));
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.light,
             onGenerateRoute: RouteGenerator.getRoute,
-            initialRoute: user != null ? Routes.login : Routes.landing,
+            initialRoute: user == null ? Routes.login : Routes.landing,
             // ),
           ),
         ),

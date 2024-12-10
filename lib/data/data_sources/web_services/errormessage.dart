@@ -1,69 +1,54 @@
+
 class SignUpErrors implements Exception {
   const SignUpErrors([
     this.message = 'An unknown exception occurred.',
   ]);
 
   factory SignUpErrors.fromCode(int errorMessage) {
-    String message;
     switch (errorMessage) {
       case 5:
-        message = 'البريد الالكتروني مستخدم من قبل';
-        break;
+        return const SignUpErrors('البريد الالكتروني مستخدم من قبل');
       case 1:
-        message = 'اسم المستخدم مفقود';
-        break;
+        return const SignUpErrors('اسم المستخدم مفقود');
       case 2:
-        message = 'البريد الالكتروني مفقود';
-        break;
+        return const SignUpErrors('البريد الالكتروني مفقود');
       case 3:
-        message = 'كلمه المرور مفقوده';
-        break;
+        return const SignUpErrors( 'كلمه المرور مفقوده');
       case 4:
-        message = 'البريد الالكتروني غير صالح';
-        break;
+        return const SignUpErrors('البريد الالكتروني غير صالح');
       case 6:
-        message = 'خطا غير معروف اثناء التسجيل';
-        break;
+        return const SignUpErrors('خطا غير معروف اثناء التسجيل');
       case 7:
-        message = "لا يوجد بيانات ";
-        break;
+        return const SignUpErrors("لا يوجد بيانات ");
       default:
-        message = "خطا غير معروف اثناء التسجيل";
-        break;
+        return const SignUpErrors("خطا غير معروف اثناء التسجيل");
     }
-    return SignUpErrors(message);
   }
 
   final String message;
 }
 
-class LoginUpErrors implements Exception {
-  const LoginUpErrors([
+class LoginErrors implements Exception {
+  const LoginErrors([
     this.message = 'An unknown exception occurred.',
   ]);
 
-  factory LoginUpErrors.fromCode(int errorMessage) {
-    String message;
+  factory LoginErrors.fromCode(int errorMessage) {
+
     switch (errorMessage) {
       case 1:
-        message = 'البريد الالكتروني مفقود';
-        break;
+        return const LoginErrors('البريد الالكتروني مفقود');
       case 2:
-        message = 'كلمه المرور مفقوده';
+        return const LoginErrors('كلمه المرور مفقوده');
       case 3:
-        message = 'كلمه المرور غير صحيحه';
-        break;
+        return const LoginErrors('كلمه المرور غير صحيحه');
       case 4:
-        message = 'البريد الالكتروني غير صحيحه';
-        break;
+        return const LoginErrors('البريد الالكتروني غير صحيحه');
       case 5:
-        message = "لا يوجد بيانات ";
-        break;
+        return const LoginErrors("لا يوجد بيانات ");
       default:
-        message = "خطا غير معروف اثناء التسجيل";
-        break;
+        return const LoginErrors("خطا غير معروف اثناء التسجيل");
     }
-    return LoginUpErrors(message);
   }
 
   final String message;

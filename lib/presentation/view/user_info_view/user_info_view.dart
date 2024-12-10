@@ -26,12 +26,12 @@ class UserInfoView extends StatelessWidget {
 
   // Centralized controller mapping for better organization
   final Map<String, TextEditingController> controllers = {
-    "parentName": TextEditingController(text: AuthBloc.user.parentData.name),
-    "parentPhone": TextEditingController(text: AuthBloc.user.parentData.phone),
-    "parentId": TextEditingController(text: AuthBloc.user.parentData.id),
-    "parentJob": TextEditingController(text: AuthBloc.user.parentData.job),
+    "parentName": TextEditingController(text: AuthBloc.user.parentData?.name),
+    "parentPhone": TextEditingController(text: AuthBloc.user.parentData?.phone),
+    "parentId": TextEditingController(text: AuthBloc.user.parentData?.id),
+    "parentJob": TextEditingController(text: AuthBloc.user.parentData?.job),
     "parentAddress":
-        TextEditingController(text: AuthBloc.user.parentData.address),
+        TextEditingController(text: AuthBloc.user.parentData?.address),
     "name": TextEditingController(text: AuthBloc.user.name),
     "phone": TextEditingController(text: AuthBloc.user.phoneNumber),
     "id":

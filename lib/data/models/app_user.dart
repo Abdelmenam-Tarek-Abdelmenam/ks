@@ -1,64 +1,75 @@
-
 import 'package:flutter/material.dart';
 
+class DefaultUser {
+  String name;
+  String email;
 
-class AppUser {
+  DefaultUser({required this.name, required this.email});
+
+  factory DefaultUser.empty() => DefaultUser(name: "", email: "");
+
+  bool get noUser => name.isEmpty || email.isEmpty;
+
+  // inputs : { uname : ""  , email : ""  , password : "" ,
+
+  Map<String, String> loginJson(String pass) {
+    return {'uname': name, 'email': email, 'password': pass};
+  }
+}
+
+class AppUser extends DefaultUser {
   final String id;
-  final String? email;
   String? photoUrl;
   bool verified;
 
-  String name;
   String? phoneNumber;
   int? nationalId;
   String? birthDate;
   String? academicYear;
   String? city;
 
-  ParentData parentData;
+  ParentData? parentData;
 
   int? weight;
   int? height;
   bool? playedBefore;
- String? experience;
- String? startPlaying;
+  String? experience;
+  String? startPlaying;
   PlayType? playType;
-
-
 
   @override
   String toString() {
     return "User $name with email $email";
   }
 
-   AppUser({
+  AppUser({
     required this.id,
-    this.email,
-     this.photoUrl,
-    this.name = "",
+    this.photoUrl,
     this.phoneNumber,
     this.nationalId,
     this.birthDate,
     this.height,
     this.weight,
     this.academicYear,
-     required this.parentData ,
+    this.parentData,
     this.city,
     this.playedBefore,
     this.playType,
     this.experience,
     this.startPlaying,
     this.verified = false,
+    required super.name,
+    required super.email,
   });
 
   // Factory method for an empty instance
   factory AppUser.empty() {
     return AppUser(
-      id: '',
-      name: '',
-      verified: false,
-      parentData: ParentData.empty()
-    );
+        id: '',
+        name: '',
+        email: '',
+        verified: false,
+        parentData: ParentData.empty());
   }
 
   // Convert to JSON
@@ -68,31 +79,32 @@ class AppUser {
       'email': email,
       'photoUrl': photoUrl,
       'name': name,
-      'phoneNumber': phoneNumber,
+      'phone': phoneNumber,
       'nationalId': nationalId,
       'academicYear': academicYear,
-      'parentData' : parentData.toJson,
+      'parentData': parentData?.toJson??{},
       'height': height,
       'experience': height,
       'weight': weight,
       'city': city,
       'date': birthDate,
-      'playedBefore': playedBefore ,
+      'playedBefore': playedBefore,
       'startPlaying': playedBefore,
-      'playType': (playType??PlayType.unknown).index,
+      'playType': (playType ?? PlayType.unknown).index,
       'verified': verified,
     };
   }
 
   // Create from JSON
-  factory AppUser.fromJson(Map<String, dynamic> json) {
+  factory AppUser.fromJson(Map<String, dynamic> json , {String? email}) {
     return AppUser(
-      id: json['id'] ?? '',
-      email: json['email'],
-      photoUrl: json['photoUrl'] ?? '',
+      id: json['id'].toString(),
       name: json['name'],
-      phoneNumber: json['phoneNumber'],
-      parentData: ParentData.fromJson(json['parentData']),
+      phoneNumber: json['phone']??'',
+      verified: json['subtype']!=0,
+      email: email??json['email'],
+      photoUrl: json['photoUrl'],
+      parentData: ParentData.fromJson(json['parentData']??{}),
       experience: json['experience'],
       nationalId: json['nationalId'],
       academicYear: json['academicYear'],
@@ -102,8 +114,7 @@ class AppUser {
       height: json['height'],
       birthDate: json['date'],
       weight: json['weight'],
-      playType: PlayType.values[json['playType']??2],
-      verified: json['verified'] ?? false,
+      playType: PlayType.values[json['playType'] ?? 2],
     );
   }
   bool get isEmpty => id == '';
@@ -125,7 +136,7 @@ class ParentData {
   });
 
   // Convert to JSON
-  Map<String, dynamic> get toJson{
+  Map<String, dynamic> get toJson {
     return {
       'name': name,
       'id': id,
@@ -137,7 +148,7 @@ class ParentData {
 
   // Factory method for an empty instance
   factory ParentData.empty() {
-    return  ParentData(
+    return ParentData(
       name: '',
       id: '',
       job: '',
@@ -158,7 +169,7 @@ class ParentData {
   }
 }
 
-enum PlayType { rightFoot, leftFoot ,unknown }
+enum PlayType { rightFoot, leftFoot, unknown }
 
 // Extension to add a custom Arabic `toString` method
 extension PlayTypeExtension on PlayType {

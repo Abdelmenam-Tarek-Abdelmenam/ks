@@ -19,6 +19,7 @@ import 'dart:math' as math;
 
 class LoginView extends StatelessWidget {
   LoginView({super.key});
+  final TextEditingController nameController= TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController1 = TextEditingController();
   final TextEditingController passController2 = TextEditingController();
@@ -93,6 +94,7 @@ class LoginView extends StatelessWidget {
                             .map((e) => modeItem(e, state.mode, context))
                             .toList(),
                       ),
+                      Dividers.h10,
                       DefaultFormField(
                         controller: emailController,
                         title: StringManger.emailAddress,
@@ -158,7 +160,16 @@ class LoginView extends StatelessWidget {
 
   Widget passwordsWidgets(AuthModes mode) => Column(
     children: [
-      Dividers.h15,
+      Dividers.h10,
+      Visibility(
+        visible:  mode == AuthModes.signUp,
+        child: DefaultFormField(
+          controller: nameController,
+          title: StringManger.name,
+          fillHint: AutofillHints.name,
+        ),
+      ),
+      Dividers.h10,
       StatefulBuilder(
         builder: (_, setState) => DefaultFormField(
           controller: passController1,
@@ -209,7 +220,7 @@ class LoginView extends StatelessWidget {
         break;
       case AuthModes.signUp:
         if (passController1.text == passController2.text) {
-          context.read<AuthBloc>().add(SignUpInUsingEmailEvent(
+          context.read<AuthBloc>().add(SignUpInUsingEmailEvent(nameController.text,
               emailController.text, passController1.text));
         } else {
           showToast(StringManger.wrongPasswords);

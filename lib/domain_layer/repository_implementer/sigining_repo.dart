@@ -1,88 +1,66 @@
+import 'package:dio/dio.dart';
 import 'package:either_dart/either.dart';
+import 'package:final_projects/data/data_sources/pref_repository.dart';
+import 'package:final_projects/data/data_sources/web_services/api_repository.dart';
+import 'package:final_projects/data/data_sources/web_services/errormessage.dart';
 import '../../data/models/app_user.dart';
-import '../../data/repositories/auth_repository.dart';
 import 'error_state.dart';
 
 class SigningRepository {
-  final AuthRepository _authRepository = AuthRepository();
-
-  Future<Either<Failure, AppUser>> signInUsingGoogle() async {
-    try {
-      AppUser user = await _authRepository.signInUsingGoogle();
-      return Right(await getUser(user));
-    } on FireBaseAuthErrors catch (err) {
-      return Left(Failure.fromError(err));
-    } catch (_) {
-      return const Left(Failure("Error happened while getting user data"));
-    }
-  }
-
-  Future<Either<Failure, AppUser>> signInWithEmailAndPassword(
-      String email, String pass) async {
-    if (email.isEmpty || pass.isEmpty) {
-      return const Left(Failure("Email and password can't be empty"));
-    }
-
-    try {
-      AppUser user =
-          await _authRepository.signInWithEmailAndPassword(email, pass);
-      return Right(await getUser(user));
-    } on FireBaseAuthErrors catch (e) {
-      return Left(Failure.fromError(e));
-    } catch (_) {
-      return const Left(Failure("Error happened while sign in"));
-    }
-  }
+  final ApiCall _api = ApiCall();
 
   Future<Either<Failure, AppUser>> signUpWithEmailAndPassword(
-      String email, String pass) async {
+      DefaultUser tempUser, String pass ) async {
+    if (tempUser.noUser || pass.isEmpty) {
+      return const Left(Failure("لا يمكنك ترك المعلومات فارغه"));
+    }
+
+    try {
+      bool success = await _api.signUp(tempUser.loginJson(pass));
+      if(success){
+        Map<String,dynamic> userData = await _api.signIn(tempUser.loginJson(pass));
+        AppUser user = AppUser.fromJson(userData, email: tempUser.email);
+        PreferenceRepository.putData(value: user.toJson, key: PreferenceKey.userData);
+        return Right(user);
+      }else{
+        return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
+      }
+    } on SignUpErrors catch (e) {
+      return Left(Failure.fromError(e));
+    }on DioException catch (e) {
+      return Left(Failure.fromError(e));
+    } catch (_) {
+      print(_);
+      return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
+    }
+  }
+
+
+
+  Future<Either<Failure, AppUser>> signInWithEmailAndPassword(
+      String email, String pass ) async {
     if (email.isEmpty || pass.isEmpty) {
-      return const Left(Failure("Email and password can't be empty"));
+      return const Left(Failure("لا يمكنك ترك المعلومات فارغه"));
     }
 
     try {
-      AppUser user =
-          await _authRepository.signUpWithEmailAndPassword(email, pass);
+      DefaultUser temp = DefaultUser(email: email , name: '');
+      Map<String,dynamic> userData = await _api.signIn(temp.loginJson(pass));
+      AppUser user = AppUser.fromJson(userData, email: email);
+      PreferenceRepository.putData(value: user.toJson, key: PreferenceKey.userData);
       return Right(user);
-    } on FireBaseAuthErrors catch (e) {
+    } on LoginErrors catch (e) {
       return Left(Failure.fromError(e));
-    } catch (_) {
-      return const Left(Failure("Error happened while sign in"));
-    }
-  }
-
-  Future<Either<Failure, void>> forgetPassword(String email) async {
-    if (email.isEmpty) {
-      return const Left(Failure("Email can't be empty"));
-    }
-
-    try {
-      await _authRepository.forgetPassword(email);
-      return const Right(null);
-    } on FireBaseAuthErrors catch (e) {
+    }on DioException catch (e) {
       return Left(Failure.fromError(e));
-    } catch (_) {
-      return const Left(Failure("Error happened while sign in"));
     }
+    //catch (_) {
+    //   print(_);
+    //   return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
+    // }
   }
+  //-----------------------------------------------------------
 
-  Future<Either<Failure, void>> registerUser(AppUser user) async {
-    if (user.name.isEmpty) {
-      return const Left(Failure("Name can't be empty"));
-    }
 
-    try {
-      // Map<String, dynamic> data = user.toJson;
-      return const Right(null);
-    } catch (_) {
-      return const Left(Failure("Error happened while register user"));
-    }
-  }
 
-  Future<AppUser> getUser(AppUser user) async {
-    Map<String, dynamic>? userData ;
-    return (userData == null
-        ? AppUser.empty()
-        : AppUser.fromJson(userData));
-  }
 }

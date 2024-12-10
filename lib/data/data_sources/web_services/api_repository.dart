@@ -1,45 +1,68 @@
+import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
+import 'package:final_projects/data/data_sources/web_services/errormessage.dart';
 import '../../../domain_layer/repository_implementer/error_state.dart';
 
-const _baseUrl = "http://192.168.30.201/KS_API";
+const _baseUrl = "https://application.ks-sports.com";
 const _userDirectory = "user";
 const _signUpTarget = "signup";
 const _logInTarget = "login";
 
-class DioDatabase {
-  var dio = Dio();
-
+class ApiCall {
   Future<void> init() async {
     if (await Connectivity().isNotConnected()) return;
   }
 
-  Future<Map<String, dynamic>> makeRequest(
+  Future<dynamic> makeRequest(
       {required String directory,
       required String target,
-      required Map<String, dynamic> data}) async {
-    var response = await dio.request(
-      '$_baseUrl/$directory/$target.php',
-      options: Options(
-        method: 'POST',
-      ),
-      data: data,
-    );
+      required Map<String, String> data}) async {
+    print('$_baseUrl/$directory/$target.php');
+    print(data);
+
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('$_baseUrl/$directory/$target.php'));
+    request.fields.addAll(data);
+    http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      return response.data;
+      String data = await response.stream.bytesToString();
+      return json.decode(data);
     } else {
-      return {};
+      throw Failure(response.reasonPhrase?? "حدث خطأ اثناء الاتصال بالخادم");
     }
-
   }
 
-  Future<void> addUser(Map<String, dynamic> userData) async {
+  Future<bool> signUp(Map<String, String> userData) async {
     await _preCheck();
-    makeRequest(
+
+    List<dynamic> data = await makeRequest(
         directory: _userDirectory, target: _signUpTarget, data: userData);
+
+    if (data[0] == "Error") {
+      throw SignUpErrors.fromCode(int.tryParse(data[1]) ?? 10);
+    } else {
+      return true;
+    }
   }
+  
+  Future<Map<String,dynamic>> signIn(Map<String, String> userData) async {
+    await _preCheck();
+
+    List<dynamic> data = await makeRequest(
+        directory: _userDirectory, target: _logInTarget, data: userData);
+
+    if (data[0] == "Error") {
+      throw LoginErrors.fromCode(int.tryParse(data[1]) ?? 10);
+    } else {
+      print(data[1]);
+      return data[1];
+    }
+  }
+
+  /////////////////////////////////////////////
 
   Future<Map<String, dynamic>?> getUser(String id) async {
     await _preCheck();
@@ -125,7 +148,7 @@ class DioDatabase {
 
   Future<void> _preCheck() async {
     if (await Connectivity().isNotConnected()) {
-      throw const Failure("No Internet connection");
+      throw const Failure("لا يوجد اتصال بالشبكه");
     }
   }
 }

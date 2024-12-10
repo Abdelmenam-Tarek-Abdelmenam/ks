@@ -1,13 +1,11 @@
 import 'package:either_dart/either.dart';
 import '../../data/models/matches.dart';
-import '../../bloc/auth_bloc/auth_status_bloc.dart';
 
 import '../../data/models/show_data.dart';
 
 import 'error_state.dart';
 
 class PlayRepository {
-  String get id => AuthBloc.user.id;
 
   Future<Either<Failure, void>> setUserAvailable(int? state) async {
     try {
