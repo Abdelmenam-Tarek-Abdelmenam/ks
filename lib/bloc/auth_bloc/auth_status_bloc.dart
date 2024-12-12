@@ -24,8 +24,7 @@ class AuthBloc extends Bloc<AuthStatusEvent, AuthStates> {
     on<LoginInUsingEmailEvent>(_loginUsingEmailHandler);
   }
 
-  bool get loading => [AuthStatus.submittingEmail, AuthStatus.submittingGoogle]
-      .contains(state.status);
+  bool get loading => AuthStatus.submittingEmail == state.status;
 
   static AppUser user = AppUser.empty();
 

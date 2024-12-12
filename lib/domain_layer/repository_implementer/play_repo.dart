@@ -1,50 +1,32 @@
 import 'package:either_dart/either.dart';
+import 'package:final_projects/data/data_sources/web_services/api_repository.dart';
+import 'package:final_projects/data/models/product.dart';
 import '../../data/models/matches.dart';
-
-import '../../data/models/show_data.dart';
 
 import 'error_state.dart';
 
 class PlayRepository {
-
-  Future<Either<Failure, void>> setUserAvailable(int? state) async {
+  Future<Either<Failure, List<Ground>>> getAllGrounds() async {
     try {
-      return const Right(null);
-    } catch (_) {
-      return const Left(Failure("Error happened while setting your state"));
-    }
-  }
+      List<Map<String, dynamic>> rowData = await ApiCall.instance.getGrounds();
 
-  Future<Either<Failure, int?>> getUserAvailable() async {
-    try {
-      return Right(0);
-    } catch (_) {
-      return const Left(Failure("Error happened while getting your state"));
-    }
-  }
-
-  Future<Either<Failure, ShowData<Ground>>> getAllGrounds(int end) async {
-    try {
-      ShowData<Ground> data =
-          ShowData([].map((e) => Ground.fromJson(e!)).toList());
+      List<Ground> data = rowData.map((e) => Ground.fromJson(e)).toList();
       return Right(data);
+    } on Failure catch (err) {
+      return Left(err);
     } catch (_, __) {
       return const Left(Failure("Error happened while getting grounds"));
     }
   }
 
-
-  Future<Either<Failure, ShowData<Ground>>> getMoreGrounds(
-      ShowData<Ground> old) async {
+  Future<Either<Failure, List<Product>>> getAllProducts() async {
     try {
-      old.getNext();
+      List<Map<String, dynamic>> rowData = await ApiCall.instance.getProducts();
 
-      List<Ground> grounds = [].map((e) => Ground.fromJson(e!)).toList();
-      old.data.addAll(grounds);
-      return Right(old);
-    } catch (_) {
+      List<Product> data = rowData.map((e) => Product.fromJson(e)).toList();
+      return Right(data);
+    } catch (_, __) {
       return const Left(Failure("Error happened while getting grounds"));
     }
   }
-
 }

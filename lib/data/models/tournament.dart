@@ -1,4 +1,3 @@
-import 'dart:math';
 
 class Tournament {
   final String id;
@@ -52,61 +51,12 @@ class Tournament {
         "description": description,
       };
 
-  static List<Tournament> get generateRandomTournaments {
-    List<String> names = [
-      "بطولة العلمين الدولية",
-      "بطولة الأهرامات المفتوحة",
-      "كأس النيل المحلي",
-      "بطولة القاهرة الكبرى",
-      "دوري البحر الأحمر",
-      "بطولة الساحل الشمالي",
-      "بطولة الإسكندرية للفرق",
-      "بطولة الخليج الفردية",
-      "كأس الصحراء العالمية",
-      "بطولة الأقصر التراثية"
-    ];
 
-    List<String> dates = [
-      "2024-12-01",
-      "2024-11-22",
-      "2024-10-15",
-      "2025-01-10",
-      "2025-02-20"
-    ];
+  bool get isAlamein=> (name ==  "بطولة العلمين الدولية") ;
 
-    List<String> descriptions = [
-      "بطولة تجمع أفضل اللاعبين من جميع أنحاء العالم.",
-      "تنافس محلي بين الفرق على الكأس.",
-      "حدث رياضي مميز في معالم مصر التاريخية.",
-      "تحدي قوي بين الأفراد في لعبة مثيرة.",
-      "بطولة تهدف إلى تعزيز الرياضة في المناطق الساحلية."
-    ];
-
-    Random random = Random();
-
-    return List.generate(8, (index) {
-      return Tournament(
-        id : "",
-        address: "21 El-Gaish Road, Al Mansheya Square, Alexandria, Egypt",
-        lat: 31.199226,
-        lan :29.894378,
-        isActive: index==0 ? true : random.nextInt(2)==0,
-        img: [
-          "https://www.sinai.news/wp-content/uploads/2024/08/%D8%A3%D9%87%D9%84%D9%8A-%D8%B3%D9%8A%D9%86%D8%A7%D8%A1-2.jpg",
-          "https://cdn.elwatannews.com/watan/300x150/1645802041725008353.jpg",
-          "https://i.ytimg.com/vi/HT8sEDqnLIY/mqdefault.jpg",
-        ][random.nextInt(3)],
-        name: names[index],
-        date: dates[random.nextInt(TournamentCategory.values.length)],
-        category: TournamentCategory
-            .values[random.nextInt(TournamentCategory.values.length)],
-        type:
-            TournamentType.values[random.nextInt(TournamentType.values.length)],
-        description: descriptions[random.nextInt(descriptions.length)],
-      );
-    });
-  }
 }
+
+
 
 enum TournamentCategory { local, global }
 

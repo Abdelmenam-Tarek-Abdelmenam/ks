@@ -9,7 +9,7 @@ import '../../shared/details_widget.dart';
 import '../../shared/widget/dividers.dart';
 
 class GroundDetailsView extends StatelessWidget {
-  const GroundDetailsView(this.ground, {Key? key}) : super(key: key);
+  const GroundDetailsView(this.ground, {super.key});
   final Ground ground;
 
   @override

@@ -7,11 +7,12 @@ import '../../../bloc/matches_bloc/matches_bloc.dart';
 import '../../../bloc/status.dart';
 import '../../resources/string_manager.dart';
 import '../../shared/custom_scafffold/sliding_scaffold.dart';
+import '../../shared/widget/error_widget.dart';
 import '../../shared/widget/loading_text.dart';
 import 'widgets/grounds.dart';
 
 class MatchesView extends StatelessWidget {
-  MatchesView({Key? key}) : super(key: key);
+  MatchesView({super.key});
   final RefreshController _refreshController = RefreshController();
 
   @override
@@ -28,43 +29,43 @@ class MatchesView extends StatelessWidget {
             enablePullUp: false,
             header: const WaterDropHeader(),
             onRefresh: () {
-              // PlayBloc bloc = context.read<PlayBloc>();
-                  // bloc.add(const GetGroundsEvent());
-
+              PlayBloc bloc = context.read<PlayBloc>();
+              if (bloc.state.type == MatchesViewType.grounds) {
+                bloc.add(const GetGroundsEvent());
+              }else if (bloc.state.type == MatchesViewType.store){
+                bloc.add(const GetProductsEvent());
+              }
             },
             child: ListView(
               children: [
                 BlocBuilder<PlayBloc, PlayState>(
                   builder: (context, state) {
-
                     print(state.type);
                     if (state.type == MatchesViewType.grounds) {
                       switch (state.groundStatus) {
                         case BlocStatus.idle:
-                          return GroundsWidget();
+                          return GroundsWidget(state.grounds);
                         case BlocStatus.gettingData:
                           return const LoadingText();
                         case BlocStatus.getData:
                           endRefresh();
-                          return GroundsWidget();
+                          return GroundsWidget(state.grounds);
                         case BlocStatus.error:
                           endRefresh();
-                          return GroundsWidget();
-                          // return const ErrorView();
+                          return const ErrorView();
                       }
-                    } else if (state.type == MatchesViewType.active) {
-                      switch (state.matchesStatus) {
+                    } else if (state.type == MatchesViewType.store) {
+                      switch (state.productsStatus) {
                         case BlocStatus.idle:
-                          return StoreView();
+                          return StoreView(state.products);
                         case BlocStatus.gettingData:
                           return const LoadingText();
                         case BlocStatus.getData:
                           endRefresh();
-                          return StoreView();
+                          return StoreView(state.products);
                         case BlocStatus.error:
                           endRefresh();
-                          return StoreView();
-                          // return const Center(child: ErrorView());
+                          return const Center(child: ErrorView());
                       }
                     } else {
                       return const LoadingText();
@@ -116,9 +117,6 @@ class MatchesView extends StatelessWidget {
                 ),
               ))
           .toList();
-
-  void communityCallback(BuildContext context) {}
-
 
   void endRefresh() {
     Future.delayed(const Duration(milliseconds: 20)).then((value) {

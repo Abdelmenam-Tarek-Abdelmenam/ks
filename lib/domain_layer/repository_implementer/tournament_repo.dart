@@ -1,41 +1,41 @@
 import 'package:either_dart/either.dart';
-import 'package:final_projects/domain_layer/date_extensions.dart';
 
 import '../../data/data_sources/web_services/api_repository.dart';
-import '../../data/models/show_data.dart';
 
 import '../../data/models/tournament.dart';
 import 'error_state.dart';
 
 class TournamentRepository {
-  Future<Either<Failure, AllTournament>> getAllStore(int end) async {
+  Future<Either<Failure, AllTournament>> getTournament() async {
     try {
-
-      return Right(AllTournament.fromJson([]));
+      List<Map<String, dynamic>> data = await ApiCall.instance.getTournament();
+      return Right(AllTournament.fromJson(data));
+    } on Failure catch (err) {
+      return Left(err);
     } catch (_) {
-      return const Left(
-          Failure("Error happened while getting tournament data"));
+      return const Left(Failure("حدث خطأ اثناء تحميل البيانات"));
     }
   }
 
-  Future<Either<Failure, ShowData<Tournament>>> getMoreStore(
-      ShowData<Tournament> old) async {
-    try {
-      old.getNext();
+  Future<Either<Failure, void>> registerTournament(Map<String,String> userData) async {
+    if(userData['name']!.isEmpty){
+      return const Left(Failure("راجع البيانات المدخله"));
+    }
 
-      List<Tournament> tournaments =
-          [].map((e) => Tournament.fromJson(e!)).toList();
-      old.data.addAll(tournaments);
-      return Right(old);
+    try {
+      bool state = await ApiCall.instance.registerTournament(userData);
+      if (!state) return const Left(Failure("حدث خطأ اثناء تحميل البيانات"));
+      return const Right(null);
+    } on Failure catch (err) {
+      return Left(err);
     } catch (_) {
-      return const Left(
-          Failure("Error happened while getting tournament data"));
+      return const Left(Failure("حدث خطأ اثناء تحميل البيانات"));
     }
   }
 }
 
 class AllTournament {
-  final ShowData<Tournament> other;
+  final List<Tournament> other;
   final List<Tournament> active;
 
   const AllTournament({
@@ -45,10 +45,15 @@ class AllTournament {
 
   factory AllTournament.fromJson(List<Map<String, dynamic>?> data) {
     List<Tournament> all = data.map((e) => Tournament.fromJson(e!)).toList();
-    List<Tournament> active = all
-        .where((element) => element.date == DateTime.now().formatDate)
-        .toList();
-    all.removeWhere((element) => element.date == DateTime.now().formatDate);
-    return AllTournament(active: active, other: ShowData(all));
+
+    List<Tournament> active = all.where((e) {
+      return !e.isActive;
+    }).toList();
+
+    List<Tournament> other = all.where((e) {
+      return e.isActive;
+    }).toList();
+
+    return AllTournament(active: active, other: other);
   }
 }

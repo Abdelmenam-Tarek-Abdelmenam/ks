@@ -1,6 +1,5 @@
 
 import 'package:final_projects/data/data_sources/web_services/errormessage.dart';
-import 'package:final_projects/data/dio_errors.dart';
 
 import '../../presentation/shared/toast_helper.dart';
 
@@ -16,15 +15,13 @@ class Failure implements Exception {
       return Failure(exception.message);
     }else if (exception is LoginErrors) {
       return Failure(exception.message);
-    }else if (exception is DioErrors) {
-      return Failure(exception.message);
-    }
-    else if (exception is Failure) {
+    } else if (exception is Failure) {
       return exception;
     } else {
       return const Failure();
     }
   }
+
 
   void get show => showToast(message, type: ToastType.error);
 }

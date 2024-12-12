@@ -3,52 +3,57 @@ part of 'matches_bloc.dart';
 class PlayState extends Equatable {
   final MatchesViewType type;
   final BlocStatus groundStatus;
-  final BlocStatus matchesStatus;
-  final ShowData<Ground> grounds;
+  final BlocStatus productsStatus;
+  final List<Ground> grounds;
+  final List<Product> products;
 
   const PlayState({
     required this.type,
     required this.grounds,
+    required this.products,
     required this.groundStatus,
-    required this.matchesStatus,
+    required this.productsStatus,
   });
 
-  factory PlayState.initial() => PlayState(
+  factory PlayState.initial() => const PlayState(
         type: MatchesViewType.grounds,
-        grounds: ShowData.empty(),
-        matchesStatus: BlocStatus.idle,
+        grounds: [],
+        products: [],
+        productsStatus: BlocStatus.idle,
         groundStatus: BlocStatus.idle,
       );
 
   PlayState copyWith({
     MatchesViewType? type,
-    ShowData<Ground>? grounds,
+    List<Ground>? grounds,
+    List<Product>? products,
     BlocStatus? groundStatus,
-    BlocStatus? matchesStatus,
+    BlocStatus? productsStatus,
     bool? forceNull,
   }) {
     return PlayState(
       type: type ?? this.type,
       grounds: grounds ?? this.grounds,
-      matchesStatus: matchesStatus ?? this.groundStatus,
+      products: products ?? this.products,
+      productsStatus: productsStatus ?? this.productsStatus,
       groundStatus: groundStatus ?? this.groundStatus,
     );
   }
 
   @override
-  List<Object?> get props => [type, matchesStatus, groundStatus];
+  List<Object?> get props => [type, productsStatus, groundStatus];
 }
 
 enum MatchesViewType {
   grounds,
-  active;
+  store;
 
   @override
   String toString() {
     switch (this) {
       case MatchesViewType.grounds:
         return StringManger.ground;
-      case MatchesViewType.active:
+      case MatchesViewType.store:
         return StringManger.active;
     }
   }
@@ -57,7 +62,7 @@ enum MatchesViewType {
     switch (this) {
       case MatchesViewType.grounds:
         return FontAwesomeIcons.mapLocationDot;
-      case MatchesViewType.active:
+      case MatchesViewType.store:
         return FontAwesomeIcons.peopleGroup;
     }
   }

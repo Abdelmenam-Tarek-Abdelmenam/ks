@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:either_dart/either.dart';
 import 'package:equatable/equatable.dart';
-import '../../data/models/show_data.dart';
+import 'package:final_projects/bloc/auth_bloc/auth_status_bloc.dart';
 import '../../data/models/tournament.dart';
 import '../../domain_layer/repository_implementer/error_state.dart';
 import '../../domain_layer/repository_implementer/tournament_repo.dart';
@@ -13,59 +15,34 @@ part 'tournament_state.dart';
 class TournamentBloc extends Bloc<TournamentEvent, TournamentState> {
   TournamentBloc() : super(TournamentState.initial()) {
     on<GetTournamentEvent>(_getDataHandler);
-    on<GetMoreTournamentEvent>(_getMoreDataHandler);
+    on<RegisterTournamentEvent>(_registerDataHandler);
     add(const GetTournamentEvent());
   }
   final TournamentRepository _repository = TournamentRepository();
 
   Future<void> _getDataHandler(GetTournamentEvent _, Emitter emit) async {
     emit(state.copyWith(status: BlocStatus.gettingData));
-    // Either<Failure, AllTournament> all =
-    //     await _repository.getAllStore(state.other.end);
-    List<Tournament> tournaments = Tournament.generateRandomTournaments;
-
-    List<Tournament> active = tournaments.where((e) {
-      return !e.isActive;
-    }).toList();
-
-    List<Tournament> other = tournaments.where((e) {
-      return e.isActive;
-    }).toList();
-
-
-    emit(state.copyWith(
-                  status: BlocStatus.getData,
-                  other: ShowData(other),
-                  active: active));
-
-  //   all.fold(
-  //       (_) => emit(state.copyWith(status: BlocStatus.error)),
-  //       (data) => emit(state.copyWith(
-  //           status: BlocStatus.getData,
-  //           other: data.other,
-  //           active: data.active)));
-  }
-
-  bool isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year &&
-        date1.month == date2.month &&
-        date1.day == date2.day;
-  }
-
-  Future<void> _getMoreDataHandler(
-      GetMoreTournamentEvent _, Emitter emit) async {
-    emit(state.copyWith(status: BlocStatus.idle));
-    if (state.other.isEnd) return;
-    if (state.status == BlocStatus.gettingData) return;
-
-    emit(state.copyWith(status: BlocStatus.idle));
-    Either<Failure, ShowData<Tournament>> all =
-        await _repository.getMoreStore(state.other);
-    all.fold(
-        (err) => err.show,
+    Either<Failure, AllTournament> all = await _repository.getTournament();
+    all.fold((err) {
+      err.show;
+      emit(state.copyWith(status: BlocStatus.error));
+    },
         (data) => emit(state.copyWith(
-              status: BlocStatus.getData,
-              other: data,
-            )));
+            status: BlocStatus.getData,
+            other: data.other,
+            active: data.active)));
+  }
+
+
+  Future<void> _registerDataHandler(RegisterTournamentEvent event, Emitter emit) async {
+    emit(state.copyWith(registrationStatus: BlocStatus.gettingData));
+
+    Either<Failure, void> all = await _repository.registerTournament(event.toJson);
+    all.fold((err) {
+      err.show;
+      emit(state.copyWith(registrationStatus: BlocStatus.error));
+    },
+        (data) => emit(state.copyWith(
+            registrationStatus: BlocStatus.getData,)));
   }
 }

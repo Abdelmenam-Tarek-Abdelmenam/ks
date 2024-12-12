@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:final_projects/data/models/product.dart';
-import 'package:final_projects/data/models/show_data.dart';
 import 'package:final_projects/presentation/view/play_view/widgets/product_design.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -14,12 +13,11 @@ import '../../../shared/custom_scafffold/top_widget.dart';
 
 import '../../../shared/widget/dividers.dart';
 import '../../../shared/widget/error_image.dart';
-import '../../../shared/widget/loading_text.dart';
 
 class StoreView extends StatelessWidget {
-  StoreView({super.key});
- final ShowData<Product> products = ShowData(dummyProducts);
- final List<OfferItem> offers = dummyOffers;
+  StoreView(this.products ,{super.key});
+ final List<Product> products ;
+ final List<OfferItem> offers = [];
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +28,7 @@ class StoreView extends StatelessWidget {
           padding: PaddingManager.p15,
           child: Center(
             child: Wrap(children: [
-              ...products.data.map((e) => ProductDesign(e)),
-              if (!products.isEnd)
-                const Center(child: FittedBox(child: LoadingText()))
+              ...products.map((e) => ProductDesign(e)),
             ]),
           ),
         ),
@@ -45,7 +41,7 @@ class StoreView extends StatelessWidget {
 }
 
 class OffersList extends StatelessWidget {
-  const OffersList(this.offers, {Key? key}) : super(key: key);
+  const OffersList(this.offers, {super.key});
   final List<OfferItem> offers;
 
   @override
@@ -206,84 +202,3 @@ class OffersList extends StatelessWidget {
     );
   }
 }
-
-
-List<OfferItem> dummyOffers = [
-  OfferItem(
-    product: Product(
-      name: "اشتراك شهري",
-      provider: "Talents Academy",
-      price: 500.0,
-      picture: "https://thepfsa.co.uk/wp-content/uploads/2022/07/Football-Coach.jpg",
-      id: "sub_001",
-      reviews: ["تدريب رائع!", "تحسن ملحوظ في الأداء."],
-    ),
-    oldPrice: 600.0,
-  ),
-  OfferItem(
-    product: Product(
-      name: "اشتراك ربع سنوي",
-      picture: "https://thepfsa.co.uk/wp-content/uploads/2022/07/Football-Coach.jpg",
-      provider: "Talents Academy",
-      price: 1400.0,
-      id: "sub_002",
-      reviews: ["مدربون محترفون.", "أنشطة ممتعة للأطفال."],
-    ),
-    oldPrice: 1600.0,
-  ),
-  OfferItem(
-    product: Product(
-      name: "اشتراك نصف سنوي",
-      picture: "https://thepfsa.co.uk/wp-content/uploads/2022/07/Football-Coach.jpg",
-
-      provider: "Talents Academy",
-      price: 2500.0,
-      id: "sub_003",
-      reviews: ["مكان ممتاز للتدريب.", "أطفالي سعداء جدًا."],
-    ),
-    oldPrice: 3000.0,
-  ),
-];
-
-List<Product> dummyProducts = [
-  Product(
-    name: "اشتراك شهري",
-    picture: "https://thepfsa.co.uk/wp-content/uploads/2022/07/Football-Coach.jpg",
-    provider: "Talents Academy",
-    price: 500.0,
-    id: "prod_001",
-    reviews: ["تجربة رائعة!", "مدربون محترفون."],
-  ),
-  Product(
-    name: "اشتراك ربع سنوي",
-    provider: "Talents Academy",
-    price: 1400.0,
-    id: "prod_002",
-    picture: "https://thepfsa.co.uk/wp-content/uploads/2022/07/Football-Coach.jpg",
-    reviews: ["أفضل قيمة مقابل السعر.", "برنامج تدريب متكامل."],
-  ),
-  Product(
-    name: "اشتراك نصف سنوي",
-    provider: "Talents Academy",
-    price: 2500.0,
-    id: "prod_003",
-    reviews: ["تجربة ممتعة للأطفال.", "مرافق ممتازة."],
-  ),
-  Product(
-    name: "اشتراك سنوي",
-    provider: "Talents Academy",
-    price: 4500.0,
-    picture: "https://thepfsa.co.uk/wp-content/uploads/2022/07/Football-Coach.jpg",
-    id: "prod_004",
-    reviews: ["أفضل استثمار لتطوير المهارات.", "تجربة موصى بها."],
-  ),
-  Product(
-    name: "اشتراك يومي",
-    provider: "Talents Academy",
-    price: 100.0,
-    id: "prod_005",
-    picture: "https://thepfsa.co.uk/wp-content/uploads/2022/07/Football-Coach.jpg",
-
-    reviews: ["مناسب جدًا للتجربة.", "مرونة في الاشتراك."],
-  ),
-];

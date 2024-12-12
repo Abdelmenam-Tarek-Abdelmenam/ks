@@ -6,32 +6,29 @@ import 'package:final_projects/data/data_sources/web_services/errormessage.dart'
 import '../../../domain_layer/repository_implementer/error_state.dart';
 
 const _baseUrl = "https://application.ks-sports.com";
-const _userDirectory = "user";
-const _signUpTarget = "signup";
-const _logInTarget = "login";
 
 class ApiCall {
-  Future<void> init() async {
-    if (await Connectivity().isNotConnected()) return;
-  }
+  static ApiCall get instance => ApiCall();
 
   Future<dynamic> makeRequest(
       {required String directory,
       required String target,
-      required Map<String, String> data}) async {
+      Map<String, String>? data}) async {
     print('$_baseUrl/$directory/$target.php');
     print(data);
 
     var request = http.MultipartRequest(
         'POST', Uri.parse('$_baseUrl/$directory/$target.php'));
-    request.fields.addAll(data);
+    if (data != null) {
+      request.fields.addAll(data);
+    }
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
       String data = await response.stream.bytesToString();
       return json.decode(data);
     } else {
-      throw Failure(response.reasonPhrase?? "حدث خطأ اثناء الاتصال بالخادم");
+      throw Failure(response.reasonPhrase ?? "حدث خطأ اثناء الاتصال بالخادم");
     }
   }
 
@@ -47,8 +44,8 @@ class ApiCall {
       return true;
     }
   }
-  
-  Future<Map<String,dynamic>> signIn(Map<String, String> userData) async {
+
+  Future<Map<String, dynamic>> signIn(Map<String, String> userData) async {
     await _preCheck();
 
     List<dynamic> data = await makeRequest(
@@ -62,88 +59,45 @@ class ApiCall {
     }
   }
 
-  /////////////////////////////////////////////
-
-  Future<Map<String, dynamic>?> getUser(String id) async {
+  Future<List<Map<String, dynamic>>> getTournament() async {
     await _preCheck();
 
-    return {};
+    List<Map<String, dynamic>> data = await makeRequest(
+        directory: _tournamentDirectory, target: _getTournamentTarget);
+    return data;
   }
 
-  Future<void> setUserAvailable(String id, int? state) async {
+  Future<bool> registerTournament(Map<String, String> userData) async {
     await _preCheck();
+
+    List<dynamic> data = await makeRequest(
+        directory: _tournamentDirectory,
+        target: _registerTournamentTarget,
+        data: userData);
+
+    if (data[0] == "Error") {
+      return false;
+    } else {
+      return true;
+    }
   }
 
-  Future<int?> getUserAvailable(String id) async {
+  Future<List<Map<String, dynamic>>> getGrounds() async {
     await _preCheck();
 
-    return 1;
+    List<Map<String, dynamic>> data =
+        await makeRequest(directory: _playDirectory, target: _getGroundsTarget);
+
+    return data;
   }
 
-  Future<Map<String, dynamic>?> getUserAvailability(String id) async {
+  Future<List<Map<String, dynamic>>> getProducts() async {
     await _preCheck();
 
-    return {};
-  }
+    List<Map<String, dynamic>> data =
+        await makeRequest(directory: _playDirectory, target: _getProductsTarget);
 
-  Future<List<Map<String, dynamic>?>> getRankedUser() async {
-    await _preCheck();
-
-    return [{}];
-  }
-
-  Future<List<Map<String, dynamic>?>> getProduct(int start, int end) async {
-    await _preCheck();
-
-    return [{}];
-  }
-
-  Future<List<Map<String, dynamic>?>> getOffers() async {
-    await _preCheck();
-
-    return [{}];
-  }
-
-  Future<List<Map<String, dynamic>?>> getTournaments(int start, int end) async {
-    await _preCheck();
-
-    return [{}];
-  }
-
-  Future<List<Map<String, dynamic>?>> getGrounds(int start, int end) async {
-    await _preCheck();
-
-    return [{}];
-  }
-
-  Future<List<Map<String, dynamic>?>> getActiveMatches(
-      int start, int end) async {
-    await _preCheck();
-
-    return [{}];
-  }
-
-  Future<List<Map<String, dynamic>?>> getCoaches(int start, int end) async {
-    await _preCheck();
-
-    return [{}];
-  }
-
-  Future<List<Map<String, dynamic>?>> getGyms(int start, int end) async {
-    await _preCheck();
-
-    return [{}];
-  }
-
-  Future<List<Map<String, dynamic>?>> getBenfits(
-      int start, int end, String type) async {
-    await _preCheck();
-
-    return [{}];
-  }
-
-  Future<void> sendMessage(Map<String, dynamic> userData) async {
-    await _preCheck();
+    return data;
   }
 
   Future<void> _preCheck() async {
@@ -159,3 +113,17 @@ extension Check on Connectivity {
     return connectivityResult[0] == ConnectivityResult.none;
   }
 }
+
+const _userDirectory = "user";
+const _signUpTarget = "signup";
+const _logInTarget = "login";
+const _getProfileTarget = "profile";
+const _updateProfileTarget = "update_profile";
+
+const _tournamentDirectory = "user";
+const _getTournamentTarget = "user";
+const _registerTournamentTarget = "user";
+
+const _playDirectory = "user";
+const _getGroundsTarget = "user";
+const _getProductsTarget = "user";

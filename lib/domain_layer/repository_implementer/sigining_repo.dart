@@ -7,7 +7,7 @@ import '../../data/models/app_user.dart';
 import 'error_state.dart';
 
 class SigningRepository {
-  final ApiCall _api = ApiCall();
+  final ApiCall _api = ApiCall.instance;
 
   Future<Either<Failure, AppUser>> signUpWithEmailAndPassword(
       DefaultUser tempUser, String pass ) async {
@@ -54,13 +54,9 @@ class SigningRepository {
     }on DioException catch (e) {
       return Left(Failure.fromError(e));
     }
-    //catch (_) {
-    //   print(_);
-    //   return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
-    // }
+    catch (_) {
+      print(_);
+      return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
+    }
   }
-  //-----------------------------------------------------------
-
-
-
 }

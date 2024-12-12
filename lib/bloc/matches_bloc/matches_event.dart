@@ -14,12 +14,6 @@ class ChangeViewTypeEvent extends PlayEvent {
   List<Object> get props => [type];
 }
 
-class RemoveUserCheckEvent extends PlayEvent {
-  const RemoveUserCheckEvent();
-
-  @override
-  List<Object?> get props => [];
-}
 
 class GetStartDataEvent extends PlayEvent {
   const GetStartDataEvent();
@@ -27,4 +21,8 @@ class GetStartDataEvent extends PlayEvent {
 
 class GetGroundsEvent extends PlayEvent {
   const GetGroundsEvent();
+}
+
+class GetProductsEvent extends PlayEvent {
+  const GetProductsEvent();
 }

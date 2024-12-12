@@ -25,6 +25,19 @@ import '../../../shared/widget/numeric_field.dart';
 class TournamentsDetails extends StatelessWidget {
   TournamentsDetails(this.tournament, {super.key});
   final Tournament tournament;
+  final Map<String, TextEditingController> controllers = {
+    "name": TextEditingController(),
+    "teamMembersCount": TextEditingController(text: "1"),
+    "supervisorName": TextEditingController(),
+    "country": TextEditingController(),
+    "city": TextEditingController(),
+    "academyAgeGroup": TextEditingController(),
+  };
+  File? teamImage;
+  final ImagePicker _picker = ImagePicker();
+
+  bool playedChampionship = false;
+  bool wonChampionship = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +98,7 @@ class TournamentsDetails extends StatelessWidget {
               builder: (context, state) {
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
-                  child: finalWidget(context, state.status),
+                  child: finalWidget(context, state.registrationStatus),
                 );
               },
             ),
@@ -94,20 +107,6 @@ class TournamentsDetails extends StatelessWidget {
       ),
     );
   }
-
-  final Map<String, TextEditingController> controllers = {
-    "name": TextEditingController(),
-    "teamMembersCount": TextEditingController(text: "1"),
-    "supervisorName": TextEditingController(),
-    "country": TextEditingController(),
-    "city": TextEditingController(),
-    "academyAgeGroup": TextEditingController(),
-  };
-  File? teamImage;
-  final ImagePicker _picker = ImagePicker();
-
-  bool playedChampionship = false;
-  bool wonChampionship = false;
 
   Widget getInfoWidget() {
     return StatefulBuilder(
@@ -248,30 +247,26 @@ class TournamentsDetails extends StatelessWidget {
       );
 
   Widget finalWidget(BuildContext context, BlocStatus status) {
-    return SizedBox(
-      width: 150,
-      height: 40,
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: ElevatedButton.icon(
-          onPressed: () => print("pressed"),
-          icon: const Icon(
-            Icons.send,
-            size: 20,
-          ),
-          label: const Text("التسجيل"),
-        ),
-      ),
-    );
     switch (status) {
-      case BlocStatus.getData:
+      case BlocStatus.idle:
         return SizedBox(
           width: 150,
           height: 40,
           child: Directionality(
             textDirection: TextDirection.rtl,
             child: ElevatedButton.icon(
-              onPressed: () => print("pressed"),
+              onPressed: () => context.read<TournamentBloc>().add(
+                   RegisterTournamentEvent(
+                      tournamentId: tournament.id,
+                      name: controllers['name']!.text,
+                      memberCount: controllers['teamMembersCount']!.text,
+                      supervisorName: controllers['supervisorName']!.text,
+                      city: controllers['city']!.text,
+                      country: controllers['country']!.text,
+                      age: controllers['academyAgeGroup']!.text,
+                      teamImage: teamImage,
+                      playedChampionship: playedChampionship,
+                      wonChampionship: wonChampionship)),
               icon: const Icon(
                 Icons.send,
                 size: 20,
@@ -282,16 +277,16 @@ class TournamentsDetails extends StatelessWidget {
         );
       case BlocStatus.gettingData:
         return const LoadingText();
-      case BlocStatus.idle:
+      case BlocStatus.getData:
         return Text(
-          "We will contact you soon",
+          "تم التسجيل بنجاخ",
           style:
               Theme.of(context).textTheme.displayLarge!.copyWith(fontSize: 20),
         );
       case BlocStatus.error:
         return FittedBox(
           child: Text(
-            "Sorry an error happened. Please try later.",
+            "نأسف حدث خطأ اثناء التسجيل",
             style: Theme.of(context)
                 .textTheme
                 .displayLarge!
@@ -316,7 +311,7 @@ class TournamentsDetails extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
             ),
-            tournament.name == "بطولة العلمين الدولية"
+            tournament.isAlamein
                 ? TextButton(
                     onPressed: () {
                       Navigator.of(context).pushNamed(Routes.video);

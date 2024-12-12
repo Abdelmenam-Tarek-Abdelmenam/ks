@@ -23,47 +23,32 @@ class TournamentsView extends StatelessWidget {
     return SlidingScaffold(
         title: StringManger.tournaments,
         child: Expanded(
-          child: NotificationListener<ScrollEndNotification>(
-            onNotification: (scrollEnd) {
-              final metrics = scrollEnd.metrics;
-              if (metrics.atEdge) {
-                bool isTop = metrics.pixels == 0;
-                if (!isTop) {
-                  context
-                      .read<TournamentBloc>()
-                      .add(const GetMoreTournamentEvent());
-                }
-              }
-              return true;
-            },
-            child: SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: false,
-              header: const WaterDropHeader(),
-              onRefresh: () => context
-                  .read<TournamentBloc>()
-                  .add(const GetTournamentEvent()),
-              controller: _refreshController,
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: BlocBuilder<TournamentBloc, TournamentState>(
-                  builder: (context, state) {
-                    return Column(
-                      children: [
-                        TopWidget(
-                            bottom: 10,
-                            child: ActiveTournamentsList(state.active)),
-                        Padding(
-                          padding: PaddingManager.p15,
-                          child: rightBuild(context, state),
-                        ),
-                        const SizedBox(
-                          height: 100,
-                        ),
-                      ],
-                    );
-                  },
-                ),
+          child: SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: false,
+            header: const WaterDropHeader(),
+            onRefresh: () => context.read<TournamentBloc>().add(
+                const GetTournamentEvent()),
+            controller: _refreshController,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: BlocBuilder<TournamentBloc, TournamentState>(
+                builder: (context, state) {
+                  return Column(
+                    children: [
+                      TopWidget(
+                          bottom: 10,
+                          child: ActiveTournamentsList(state.active)),
+                      Padding(
+                        padding: PaddingManager.p15,
+                        child: rightBuild(context, state),
+                      ),
+                      const SizedBox(
+                        height: 100,
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),

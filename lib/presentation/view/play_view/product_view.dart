@@ -15,7 +15,7 @@ import '../../shared/widget/dividers.dart';
 import '../../shared/widget/error_image.dart';
 
 class ProductView extends StatelessWidget {
-  ProductView(this.product, {Key? key}) : super(key: key);
+  const ProductView(this.product, {super.key});
   final Product product;
 
   @override
