@@ -82,7 +82,7 @@ class AppUser extends DefaultUser {
       'phone': phoneNumber,
       'nationalId': nationalId,
       'academicYear': academicYear,
-      'parentData': parentData?.toJson??{},
+      'parentData': parentData?.toJson ?? {},
       'height': height,
       'experience': height,
       'weight': weight,
@@ -96,15 +96,15 @@ class AppUser extends DefaultUser {
   }
 
   // Create from JSON
-  factory AppUser.fromJson(Map<String, dynamic> json , {String? email}) {
+  factory AppUser.fromJson(Map<String, dynamic> json, {String? email}) {
     return AppUser(
       id: json['id'].toString(),
       name: json['name'],
-      phoneNumber: json['phone']??'',
-      verified: json['subtype']!=0,
-      email: email??json['email'],
+      phoneNumber: json['phone'] ?? '',
+      verified: json['subtype'] != 0,
+      email: email ?? json['email'],
       photoUrl: json['photoUrl'],
-      parentData: ParentData.fromJson(json['parentData']??{}),
+      parentData: ParentData.fromJson(json['parentData'] ?? {}),
       experience: json['experience'],
       nationalId: json['nationalId'],
       academicYear: json['academicYear'],
@@ -117,6 +117,25 @@ class AppUser extends DefaultUser {
       playType: PlayType.values[json['playType'] ?? 2],
     );
   }
+
+  void updateFromJson(Map<String, dynamic> json) {
+    name = json['name'] ?? name;
+    phoneNumber = json['phone'] ?? phoneNumber;
+    email = json['email'] ?? email  ;
+    photoUrl = json['photoUrl'] ?? photoUrl;
+    parentData = json['parentData']!=null ? ParentData.fromJson(json['parentData']) : parentData;
+    experience = json['experience'] ?? experience;
+    nationalId = json['nationalId']??nationalId;
+    academicYear = json['academicYear']??academicYear;
+    city = json['city']??city;
+    playedBefore = json['playedBefore']??playedBefore;
+    startPlaying = json['startPlaying']??startPlaying;
+    height = json['height']??height;
+    birthDate = json['date']??birthDate;
+    weight = json['weight']??weight;
+    playType = json['playType'] != null ? PlayType.values[json['playType'] ?? 2] :  playType;
+  }
+
   bool get isEmpty => id == '';
 }
 

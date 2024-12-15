@@ -59,6 +59,35 @@ class ApiCall {
     }
   }
 
+
+  Future<Map<String, dynamic>> getUserData(String id) async {
+    await _preCheck();
+
+    List<dynamic> data = await makeRequest(
+        directory: _userDirectory, target: _getProfileTarget, data: {"userId" : id});
+
+    if (data[0] == "Error") {
+      throw const Failure();
+    } else {
+      return data[1];
+    }
+  }
+
+  Future<bool> editUserData(Map<String, String> userData) async {
+    await _preCheck();
+
+    List<dynamic> data = await makeRequest(
+        directory: _userDirectory,
+        target: _updateProfileTarget,
+        data: userData);
+
+    if (data[0] == "Error") {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getTournament() async {
     await _preCheck();
 

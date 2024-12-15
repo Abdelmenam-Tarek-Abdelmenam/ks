@@ -5,6 +5,7 @@ enum InfoStatus {
   changingDataInput,
   loading,
   error,
+  done,
 }
 
 enum InfoModes { personal, sports, parents }

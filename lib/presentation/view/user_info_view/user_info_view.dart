@@ -47,6 +47,9 @@ class UserInfoView extends StatelessWidget {
     "startDate": TextEditingController(text: AuthBloc.user.startPlaying),
   };
 
+  PlayType? playType = AuthBloc.user.playType;
+  bool playedBefore = false;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -70,9 +73,7 @@ class UserInfoView extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Hero(
-                                tag: "image",
-                                child: userImage(context)),
+                            Hero(tag: "image", child: userImage(context)),
                             Dividers.h10,
                             signUpWidgets(context),
                             Dividers.h10,
@@ -127,9 +128,6 @@ class UserInfoView extends StatelessWidget {
         return sportsInfo(context);
     }
   }
-
-  PlayType? playType = AuthBloc.user.playType;
-  bool playedBefore = false;
 
   Widget sportsInfo(BuildContext context) => Column(
         children: [
@@ -361,8 +359,11 @@ class UserInfoView extends StatelessWidget {
       BlocBuilder<UserInfoBloc, InfoStates>(
         builder: (context, state) {
           return AnimatedCrossFade(
-              firstChild:
-                  ElevatedButton(onPressed: () {}, child: const Text("تعديل")),
+              firstChild: ElevatedButton(
+                  onPressed: () {
+                    context.read<UserInfoBloc>().add(const RegisterDataEvent());
+                  },
+                  child: const Text("تعديل")),
               secondChild: const LoadingText(),
               crossFadeState: state.status == InfoStatus.loading
                   ? CrossFadeState.showSecond
