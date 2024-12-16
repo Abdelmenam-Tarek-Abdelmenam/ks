@@ -12,21 +12,21 @@ class TournamentRepository {
       return Right(AllTournament.fromJson(List<Map<String,dynamic>>.from(data)));
     } on Failure catch (err) {
       return Left(err);
-    } catch (_,s) {
-      print(_);
-      print(s);
+    } catch (_,__) {
       return const Left(Failure("حدث خطأ اثناء تحميل البيانات"));
     }
   }
 
 
-  Future<Either<Failure, bool>> checkRegistered(String id) async {
+  Future<Either<Failure, Map<String,dynamic>>> checkRegistered(String id) async {
     try {
-      bool isRegistered = await ApiCall.instance.checkRegistered(id);
+      Map<String,dynamic> isRegistered = await ApiCall.instance.checkRegistered(id);
       return Right(isRegistered);
     } on Failure catch (err) {
       return Left(err);
-    } catch (_) {
+    } catch (_ ,s) {
+      print(_);
+      print(s);
 
       return const Left(Failure("حدث خطأ اثناء تحميل البيانات"));
     }
@@ -43,7 +43,9 @@ class TournamentRepository {
       return const Right(null);
     } on Failure catch (err) {
       return Left(err);
-    } catch (_) {
+    } catch (_ ,s) {
+      print(_);
+      print(s);
       return const Left(Failure("حدث خطأ اثناء تحميل البيانات"));
     }
   }

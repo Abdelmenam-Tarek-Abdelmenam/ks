@@ -23,17 +23,21 @@ class CheckRegisteredEVent extends TournamentEvent {
 
 class RegisterTournamentEvent extends TournamentEvent {
   final String tournamentId;
+  final String? subId;
+  final bool isInsertFlag;
   final String name;
   final String memberCount;
   final String supervisorName;
   final String city;
   final String country;
   final String age;
-  final File teamImage;
+  final String teamImage;
   final String type;
   final bool playedChampionship;
 
   const RegisterTournamentEvent({
+    required this.isInsertFlag,
+    required this.subId,
     required this.tournamentId,
     required this.name,
     required this.memberCount,
@@ -47,18 +51,19 @@ class RegisterTournamentEvent extends TournamentEvent {
   });
 
   Map<String, String> get toJson => {
+        'flag_mon3m': isInsertFlag ? '1' : '2',
         'id_user': AuthBloc.user.id,
         'id_champ': tournamentId,
+        'id_sub_champ': subId.toString(),
         'team_name': name,
         'team_num': memberCount,
         'team_manager': supervisorName,
         'team_city': city,
         'team_country': country,
-        'team_photo': convertImageToBase64(teamImage),
         'team_range': age,
-        'before_play': playedChampionship ? '0' : '1',
-        'sub_champ_pay': '0',
-        'sub_champ_type': type,
+        'play_before': playedChampionship ? '0' : '1',
+        'type_champ_sub': type,
+        'team_photo': teamImage,
       };
 
   @override

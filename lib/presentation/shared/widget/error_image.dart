@@ -102,7 +102,8 @@ String getMimeTypeFromPath(String filePath) {
   }
 }
 
-String convertImageToBase64(File imageFile) {
+String? convertImageToBase64(File? imageFile) {
+  if(imageFile == null) return null;
   Uint8List imageBytes =  imageFile.readAsBytesSync();
   String mimeType = getMimeTypeFromPath(imageFile.path);
   String base64String = base64Encode(imageBytes);

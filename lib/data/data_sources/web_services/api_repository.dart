@@ -106,34 +106,33 @@ class ApiCall {
     }
   }
 
-  Future<bool> checkRegistered(String id) async {
+  Future<Map<String, dynamic> > checkRegistered(String id) async {
     await _preCheck();
 
-    List<dynamic> data = await makeRequest(
+    Map<String, dynamic> data = await makeRequest(
         directory: _tournamentDirectory,
         target: _checkTournamentTarget,
-        data: {'id': id, 'user_id': AuthBloc.user.id});
+        data: {'id_champ': id, 'id_user': AuthBloc.user.id});
 
-    if (data[0] == "Error") {
+    if (data.containsKey('Success')) {
+      return data['Data'];
+    } else if(data['Error'] == 'No subscription found'){
+      return {};
+    }else{
       throw const Failure("حدث خطأ اثناء طلب البيانات");
-    } else {
-      return data[0] == '1';
     }
   }
 
   Future<bool> registerTournament(Map<String, String> userData) async {
     await _preCheck();
 
-    List<dynamic> data = await makeRequest(
+    Map<String, dynamic> data = await makeRequest(
         directory: _tournamentDirectory,
         target: _registerTournamentTarget,
         data: userData);
 
-    if (data[0] == "Error") {
-      return false;
-    } else {
-      return true;
-    }
+    return data.containsKey('Success');
+
   }
 
   Future<List<Map<String, dynamic>>> getGrounds() async {
@@ -176,8 +175,8 @@ const _updateProfileTarget = "update_profile";
 
 const _tournamentDirectory = "championships";
 const _getTournamentTarget = "view";
-const _registerTournamentTarget = "user_add";
-const _checkTournamentTarget = "user";
+const _registerTournamentTarget = "user_champ";
+const _checkTournamentTarget = "user_check";
 
 const _playDirectory = "user";
 const _getGroundsTarget = "user";

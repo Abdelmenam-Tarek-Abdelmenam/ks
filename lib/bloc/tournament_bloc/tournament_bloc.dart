@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:either_dart/either.dart';
 import 'package:equatable/equatable.dart';
 import 'package:final_projects/bloc/auth_bloc/auth_status_bloc.dart';
+import 'package:final_projects/presentation/shared/toast_helper.dart';
 import 'package:final_projects/presentation/shared/widget/error_image.dart';
 import '../../data/models/tournament.dart';
 import '../../domain_layer/repository_implementer/error_state.dart';
@@ -45,26 +46,28 @@ class TournamentBloc extends Bloc<TournamentEvent, TournamentState> {
       err.show;
       emit(state.copyWith(registrationStatus: BlocStatus.error));
     },
-        (data) => emit(state.copyWith(
+        (data) {
+      showToast("تم تسجيل البيانات بنجاح" , type: ToastType.success);
+          state.active.where((e) => e.id == event.tournamentId).first.isRegistered?.addAll(event.toJson);
+          emit(state.copyWith(
               registrationStatus: BlocStatus.getData,
-            )));
+            ));
+        });
   }
 
   Future<void> _checkRegisteredHandler(
       CheckRegisteredEVent event, Emitter emit) async {
-      state.active.where((e) => e.id == event.id).first.isRegistered = true;
-    emit(state.copyWith(
-        checkStatus: BlocStatus.getData, clickedId: event.id));
+    emit(state.copyWith(checkStatus: BlocStatus.gettingData, clickedId: event.id));
 
-    // Either<Failure, bool> all = await _repository.checkRegistered(event.id);
-    // all.fold((err) {
-    //   err.show;
-    //   emit(state.copyWith(checkStatus: BlocStatus.error));
-    // }, (data) {
-    //   state.active.where((e) => e.id == event.id).first.isRegistered = data;
-    //   emit(state.copyWith(
-    //     checkStatus: BlocStatus.getData,
-    //   ));
-    // });
+    Either<Failure, Map<String,dynamic>> all = await _repository.checkRegistered(event.id);
+    all.fold((err) {
+      err.show;
+      emit(state.copyWith(checkStatus: BlocStatus.error));
+    }, (data) {
+      state.active.where((e) => e.id == event.id).first.isRegistered = data;
+      emit(state.copyWith(
+        checkStatus: BlocStatus.getData,
+      ));
+    });
   }
 }

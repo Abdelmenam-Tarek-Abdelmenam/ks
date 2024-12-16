@@ -31,26 +31,27 @@ class TournamentsDetails extends StatefulWidget {
 }
 
 class _TournamentsDetailsState extends State<TournamentsDetails> {
-  final Map<String, TextEditingController> controllers = {
-    "name": TextEditingController(),
-    "teamMembersCount": TextEditingController(text: "1"),
-    "supervisorName": TextEditingController(),
-    "country": TextEditingController(),
-    "city": TextEditingController(),
-    "academyAgeGroup": TextEditingController(),
+  late final Map<String, TextEditingController> controllers = {
+    "name": TextEditingController(
+        text: widget.tournament.isRegistered?['team_name']),
+    "teamMembersCount": TextEditingController(
+        text: (widget.tournament.isRegistered?['team_num'] ?? 1).toString()),
+    "supervisorName": TextEditingController(
+        text: widget.tournament.isRegistered?['team_manager']),
+    "country": TextEditingController(
+        text: widget.tournament.isRegistered?['team_country']),
+    "city": TextEditingController(
+        text: widget.tournament.isRegistered?['team_city']),
+    "academyAgeGroup": TextEditingController(
+        text: (widget.tournament.isRegistered?['team_range'] ?? 14).toString()),
   };
 
   File? teamImage;
-
   final ImagePicker _picker = ImagePicker();
-  late String selectedType;
-  bool playedChampionship = false;
 
-  @override
-  void initState() {
-    selectedType = widget.tournament.types[0];
-    super.initState();
-  }
+  late String selectedType = widget.tournament.types[0];
+  late bool playedChampionship =
+      widget.tournament.isRegistered?['play_before'] == 1;
 
   @override
   Widget build(BuildContext context) {
@@ -262,12 +263,6 @@ class _TournamentsDetailsState extends State<TournamentsDetails> {
     switch (status) {
       case BlocStatus.gettingData:
         return const LoadingText();
-      case BlocStatus.getData:
-        return Text(
-          "تم التسجيل بنجاخ",
-          style:
-              Theme.of(context).textTheme.displayLarge!.copyWith(fontSize: 20),
-        );
       default:
         return SizedBox(
           width: 150,
@@ -276,8 +271,13 @@ class _TournamentsDetailsState extends State<TournamentsDetails> {
             textDirection: TextDirection.rtl,
             child: ElevatedButton.icon(
               onPressed: () {
-                if (teamImage != null) {
+                if (teamImage != null ||
+                    widget.tournament.isRegistered?['team_photo'] != null) {
                   context.read<TournamentBloc>().add(RegisterTournamentEvent(
+                      isInsertFlag:
+                          widget.tournament.isRegistered?.isEmpty ?? false,
+                      subId: widget.tournament.isRegistered?['id_champ_sub']
+                          .toString(),
                       tournamentId: widget.tournament.id,
                       name: controllers['name']!.text,
                       memberCount: controllers['teamMembersCount']!.text,
@@ -285,7 +285,8 @@ class _TournamentsDetailsState extends State<TournamentsDetails> {
                       city: controllers['city']!.text,
                       country: controllers['country']!.text,
                       age: controllers['academyAgeGroup']!.text,
-                      teamImage: teamImage!,
+                      teamImage: convertImageToBase64(teamImage) ??
+                          widget.tournament.isRegistered?['team_photo'],
                       playedChampionship: playedChampionship,
                       type: selectedType));
                 }

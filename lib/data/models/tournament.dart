@@ -10,7 +10,7 @@ class Tournament {
   final bool isActive;
   final List<String> types = ['اعتيادي' , 'مخفض'];
 
-  bool? isRegistered;
+  Map<String,dynamic> ? isRegistered;
 
   Tournament(
       {required this.img,
