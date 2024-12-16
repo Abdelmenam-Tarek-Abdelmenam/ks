@@ -1,6 +1,4 @@
-import 'package:dio/dio.dart';
 import 'package:either_dart/either.dart';
-import 'package:final_projects/bloc/auth_bloc/auth_status_bloc.dart';
 import 'package:final_projects/data/data_sources/pref_repository.dart';
 import 'package:final_projects/data/data_sources/web_services/api_repository.dart';
 import 'package:final_projects/data/data_sources/web_services/errormessage.dart';
@@ -30,10 +28,7 @@ class SigningRepository {
       }
     } on SignUpErrors catch (e) {
       return Left(Failure.fromError(e));
-    } on DioException catch (e) {
-      return Left(Failure.fromError(e));
     } catch (_) {
-      print(_);
       return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
     }
   }
@@ -53,10 +48,7 @@ class SigningRepository {
       return Right(user);
     } on LoginErrors catch (e) {
       return Left(Failure.fromError(e));
-    } on DioException catch (e) {
-      return Left(Failure.fromError(e));
     } catch (_) {
-      print(_);
       return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
     }
   }
@@ -71,10 +63,7 @@ class SigningRepository {
       }
     } on LoginErrors catch (e) {
       return Left(Failure.fromError(e));
-    } on DioException catch (e) {
-      return Left(Failure.fromError(e));
     } catch (_) {
-      print(_);
       return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
     }
   }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingText extends StatelessWidget {
-  const LoadingText({Key? key}) : super(key: key);
+  const LoadingText({super.key});
 
   @override
   Widget build(BuildContext context) {

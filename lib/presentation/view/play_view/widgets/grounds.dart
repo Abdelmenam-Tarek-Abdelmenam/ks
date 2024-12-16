@@ -41,7 +41,7 @@ class GroundsWidget extends StatelessWidget {
 }
 
 class GroundDesign extends StatelessWidget {
-  const GroundDesign(this.item, {Key? key}) : super(key: key);
+  const GroundDesign(this.item, {super.key});
   final Ground item;
 
   @override

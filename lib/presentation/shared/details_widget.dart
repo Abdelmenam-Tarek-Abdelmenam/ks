@@ -93,7 +93,7 @@ class AddressBox extends StatelessWidget {
 }
 
 class ImagesList extends StatelessWidget {
-  const ImagesList(this.images, {Key? key}) : super(key: key);
+  const ImagesList(this.images, {super.key});
   final List<String> images;
 
   @override
@@ -139,7 +139,7 @@ class ImagesList extends StatelessWidget {
 }
 
 class ReviewList extends StatefulWidget {
-  const ReviewList(this.reviews, {Key? key}) : super(key: key);
+  const ReviewList(this.reviews, {super.key});
   final List<String> reviews;
 
   @override

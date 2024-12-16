@@ -22,9 +22,15 @@ import '../../../shared/widget/form_field.dart';
 import '../../../shared/widget/loading_text.dart';
 import '../../../shared/widget/numeric_field.dart';
 
-class TournamentsDetails extends StatelessWidget {
-  TournamentsDetails(this.tournament, {super.key});
+class TournamentsDetails extends StatefulWidget {
+  const TournamentsDetails(this.tournament, {super.key});
   final Tournament tournament;
+
+  @override
+  State<TournamentsDetails> createState() => _TournamentsDetailsState();
+}
+
+class _TournamentsDetailsState extends State<TournamentsDetails> {
   final Map<String, TextEditingController> controllers = {
     "name": TextEditingController(),
     "teamMembersCount": TextEditingController(text: "1"),
@@ -33,22 +39,29 @@ class TournamentsDetails extends StatelessWidget {
     "city": TextEditingController(),
     "academyAgeGroup": TextEditingController(),
   };
-  File? teamImage;
-  final ImagePicker _picker = ImagePicker();
 
+  File? teamImage;
+
+  final ImagePicker _picker = ImagePicker();
+  late String selectedType;
   bool playedChampionship = false;
-  bool wonChampionship = false;
+
+  @override
+  void initState() {
+    selectedType = widget.tournament.types[0];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: SlidingScaffold(
-        title: tournament.name,
+        title: widget.tournament.name,
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
         floatingActionButton: FloatingActionButton(
-            tooltip: tournament.address,
-            onPressed: () => launchMapsUrl(tournament.lat, tournament.lan),
+            tooltip: widget.tournament.address,
+            onPressed: () => launchMapsUrl(null, null),
             child: Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: Lottie.asset(LottieManager.location))),
@@ -76,7 +89,7 @@ class TournamentsDetails extends StatelessWidget {
               width: 300,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: ErrorImage(tournament.img, fit: BoxFit.fill),
+                child: Base64Image(widget.tournament.img, fit: BoxFit.fill),
               ),
             ),
           ),
@@ -96,6 +109,7 @@ class TournamentsDetails extends StatelessWidget {
           Center(
             child: BlocBuilder<TournamentBloc, TournamentState>(
               builder: (context, state) {
+                print("here");
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   child: finalWidget(context, state.registrationStatus),
@@ -109,110 +123,108 @@ class TournamentsDetails extends StatelessWidget {
   }
 
   Widget getInfoWidget() {
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Academy Name and User Name
+        customFormField(
+            "name",
+            widget.tournament.type == TournamentType.single
+                ? "اسم الاعب"
+                : "اسم الأكاديمية"),
+        Dividers.h10,
+        Visibility(
+          visible: widget.tournament.type == TournamentType.team,
+          child: customNumericField("teamMembersCount", "عدد اعضاء الفريق"),
+        ),
+        Dividers.h10,
+        customFormField("supervisorName", "اسم المشرف الأكاديمي"),
+        Dividers.h10,
+        Row(
           children: [
-            // Academy Name and User Name
-            customFormField(
-                "name",
-                tournament.type == TournamentType.single
-                    ? "اسم الاعب"
-                    : "اسم الأكاديمية"),
-            Dividers.h10,
-            Visibility(
-              visible: tournament.type == TournamentType.team,
-              child: customNumericField("teamMembersCount", "عدد اعضاء الفريق"),
-            ),
-            Dividers.h10,
-            customFormField("supervisorName", "اسم المشرف الأكاديمي"),
-            Dividers.h10,
-            Row(
-              children: [
-                Expanded(child: customFormField("country", "الدولة")),
-                Dividers.w5,
-                Expanded(child: customFormField("city", "المدينة")),
-              ],
-            ),
-            Dividers.h10,
-            customFormField(
-                "academyAgeGroup",
-                tournament.type == TournamentType.single
-                    ? "عمر الاعب"
-                    : " " "الفئة العمرية للأكاديمية ",
-                keyboardType: TextInputType.number),
+            Expanded(child: customFormField("country", "الدولة")),
+            Dividers.w5,
+            Expanded(child: customFormField("city", "المدينة")),
+          ],
+        ),
+        Dividers.h10,
+        customFormField(
+            "academyAgeGroup",
+            widget.tournament.type == TournamentType.single
+                ? "عمر الاعب"
+                : " " "الفئة العمرية للأكاديمية ",
+            keyboardType: TextInputType.number),
 
-            Dividers.h10,
+        Dividers.h10,
+        // Championship Participation
+        Directionality(
+          textDirection: TextDirection.rtl,
+          child: SwitchListTile(
+            title: const Text("هل شاركت في بطولة من قبل؟"),
+            value: playedChampionship,
+            onChanged: (value) {
+              setState(() {
+                playedChampionship = value;
+              });
+            },
+          ),
+        ),
+        Dividers.h10,
+        const Center(
+            child: Text("نوع الاشتراك",
+                textDirection: TextDirection.rtl,
+                style: TextStyle(fontWeight: FontWeight.bold))),
+        StatefulBuilder(builder: (context, ss) {
+          return Row(
+            children: widget.tournament.types
+                .map((e) => Expanded(
+                      child: FilterChip(
+                        label: Text(
+                          e,
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                        selected: e == selectedType,
+                        onSelected: (value) {
+                          ss(() {
+                            selectedType = e;
+                          });
+                        },
+                      ),
+                    ))
+                .toList(),
+          );
+        }),
+        Dividers.h10,
 
-            // Championship Participation
-            Directionality(
-              textDirection: TextDirection.rtl,
-              child: SwitchListTile(
-                title: const Text("هل شاركت في بطولة من قبل؟"),
-                value: playedChampionship,
-                onChanged: (value) {
-                  setState(() {
-                    playedChampionship = value;
-                  });
-                },
-              ),
-            ),
-            Visibility(
-              visible: playedChampionship,
-              child: Column(
-                children: [
-                  Dividers.h10,
-                  Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: SwitchListTile(
-                      title: const Text("إذا نعم، هل سبق أن فزت بالبطولة؟"),
-                      value: wonChampionship,
-                      onChanged: (value) {
-                        setState(() {
-                          wonChampionship = value;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Dividers.h10,
-
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    icon: Icon(
-                      teamImage == null
-                          ? Icons.image_not_supported
-                          : Icons.image,
-                      color: ColorManager.darkGrey,
-                      size: 25,
-                    ),
-                    onPressed: () async {
-                      final pickedFile =
-                          await _picker.pickImage(source: ImageSource.gallery);
-                      if (pickedFile != null) {
-                        setState(() {
-                          teamImage = File(pickedFile.path);
-                        });
-                      } else {
-                        showToast("No image selected");
-                      }
-                    },
-                    label: const Text(
-                      "اختيار شعار او صوره للفريق",
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                icon: Icon(
+                  teamImage == null ? Icons.image_not_supported : Icons.image,
+                  color: ColorManager.darkGrey,
+                  size: 25,
                 ),
-              ],
+                onPressed: () async {
+                  final pickedFile =
+                      await _picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    setState(() {
+                      teamImage = File(pickedFile.path);
+                    });
+                  } else {
+                    showToast("No image selected");
+                  }
+                },
+                label: const Text(
+                  "اختيار شعار او صوره للفريق",
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
             ),
           ],
-        );
-      },
+        ),
+      ],
     );
   }
 
@@ -248,33 +260,6 @@ class TournamentsDetails extends StatelessWidget {
 
   Widget finalWidget(BuildContext context, BlocStatus status) {
     switch (status) {
-      case BlocStatus.idle:
-        return SizedBox(
-          width: 150,
-          height: 40,
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: ElevatedButton.icon(
-              onPressed: () => context.read<TournamentBloc>().add(
-                   RegisterTournamentEvent(
-                      tournamentId: tournament.id,
-                      name: controllers['name']!.text,
-                      memberCount: controllers['teamMembersCount']!.text,
-                      supervisorName: controllers['supervisorName']!.text,
-                      city: controllers['city']!.text,
-                      country: controllers['country']!.text,
-                      age: controllers['academyAgeGroup']!.text,
-                      teamImage: teamImage,
-                      playedChampionship: playedChampionship,
-                      wonChampionship: wonChampionship)),
-              icon: const Icon(
-                Icons.send,
-                size: 20,
-              ),
-              label: const Text("التسجيل"),
-            ),
-          ),
-        );
       case BlocStatus.gettingData:
         return const LoadingText();
       case BlocStatus.getData:
@@ -283,14 +268,34 @@ class TournamentsDetails extends StatelessWidget {
           style:
               Theme.of(context).textTheme.displayLarge!.copyWith(fontSize: 20),
         );
-      case BlocStatus.error:
-        return FittedBox(
-          child: Text(
-            "نأسف حدث خطأ اثناء التسجيل",
-            style: Theme.of(context)
-                .textTheme
-                .displayLarge!
-                .copyWith(fontSize: 20),
+      default:
+        return SizedBox(
+          width: 150,
+          height: 40,
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                if (teamImage != null) {
+                  context.read<TournamentBloc>().add(RegisterTournamentEvent(
+                      tournamentId: widget.tournament.id,
+                      name: controllers['name']!.text,
+                      memberCount: controllers['teamMembersCount']!.text,
+                      supervisorName: controllers['supervisorName']!.text,
+                      city: controllers['city']!.text,
+                      country: controllers['country']!.text,
+                      age: controllers['academyAgeGroup']!.text,
+                      teamImage: teamImage!,
+                      playedChampionship: playedChampionship,
+                      type: selectedType));
+                }
+              },
+              icon: const Icon(
+                Icons.send,
+                size: 20,
+              ),
+              label: const Text("التسجيل"),
+            ),
           ),
         );
     }
@@ -311,7 +316,7 @@ class TournamentsDetails extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
             ),
-            tournament.isAlamein
+            widget.tournament.isAlamein
                 ? TextButton(
                     onPressed: () {
                       Navigator.of(context).pushNamed(Routes.video);
@@ -323,17 +328,17 @@ class TournamentsDetails extends StatelessWidget {
                           ),
                     ))
                 : Text(
-                    tournament.description ?? "",
+                    widget.tournament.description ?? "",
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  tournament.date,
-                  tournament.category == TournamentCategory.local
+                  widget.tournament.date,
+                  widget.tournament.category == TournamentCategory.local
                       ? "مسابقه محليه"
                       : "مسابقه عالميه",
-                  tournament.type == TournamentType.team
+                  widget.tournament.type == TournamentType.team
                       ? "التسجيل كفريق"
                       : "التسجيل فردي",
                 ]

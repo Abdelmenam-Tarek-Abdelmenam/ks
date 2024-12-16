@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:final_projects/bloc/auth_bloc/auth_status_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:final_projects/data/data_sources/web_services/errormessage.dart';
 import '../../../domain_layer/repository_implementer/error_state.dart';
@@ -13,19 +14,21 @@ class ApiCall {
   Future<dynamic> makeRequest(
       {required String directory,
       required String target,
-      Map<String, String>? data}) async {
+      Map<String, String>? data,
+      bool isGet = false}) async {
     print('$_baseUrl/$directory/$target.php');
     print(data);
 
     var request = http.MultipartRequest(
-        'POST', Uri.parse('$_baseUrl/$directory/$target.php'));
+        isGet ? 'GET' : 'POST', Uri.parse('$_baseUrl/$directory/$target.php'));
     if (data != null) {
       request.fields.addAll(data);
     }
     http.StreamedResponse response = await request.send();
-
+    print(response.statusCode);
     if (response.statusCode == 200) {
       String data = await response.stream.bytesToString();
+      print(data);
       return json.decode(data);
     } else {
       throw Failure(response.reasonPhrase ?? "حدث خطأ اثناء الاتصال بالخادم");
@@ -54,17 +57,17 @@ class ApiCall {
     if (data[0] == "Error") {
       throw LoginErrors.fromCode(int.tryParse(data[1]) ?? 10);
     } else {
-      print(data[1]);
       return data[1];
     }
   }
-
 
   Future<Map<String, dynamic>> getUserData(String id) async {
     await _preCheck();
 
     List<dynamic> data = await makeRequest(
-        directory: _userDirectory, target: _getProfileTarget, data: {"userId" : id});
+        directory: _userDirectory,
+        target: _getProfileTarget,
+        data: {"userId": id});
 
     if (data[0] == "Error") {
       throw const Failure();
@@ -88,12 +91,34 @@ class ApiCall {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getTournament() async {
+  Future<List<dynamic>> getTournament() async {
     await _preCheck();
 
-    List<Map<String, dynamic>> data = await makeRequest(
-        directory: _tournamentDirectory, target: _getTournamentTarget);
-    return data;
+    List<dynamic> data = await makeRequest(
+        directory: _tournamentDirectory,
+        target: _getTournamentTarget,
+        isGet: true);
+
+    if (data[0] == "Error") {
+      throw const Failure("حدث خطأ اثناء رفع البيانات");
+    } else {
+      return List<Map<String, dynamic>>.from(data);
+    }
+  }
+
+  Future<bool> checkRegistered(String id) async {
+    await _preCheck();
+
+    List<dynamic> data = await makeRequest(
+        directory: _tournamentDirectory,
+        target: _checkTournamentTarget,
+        data: {'id': id, 'user_id': AuthBloc.user.id});
+
+    if (data[0] == "Error") {
+      throw const Failure("حدث خطأ اثناء طلب البيانات");
+    } else {
+      return data[0] == '1';
+    }
   }
 
   Future<bool> registerTournament(Map<String, String> userData) async {
@@ -123,8 +148,8 @@ class ApiCall {
   Future<List<Map<String, dynamic>>> getProducts() async {
     await _preCheck();
 
-    List<Map<String, dynamic>> data =
-        await makeRequest(directory: _playDirectory, target: _getProductsTarget);
+    List<Map<String, dynamic>> data = await makeRequest(
+        directory: _playDirectory, target: _getProductsTarget);
 
     return data;
   }
@@ -149,9 +174,10 @@ const _logInTarget = "login";
 const _getProfileTarget = "profile";
 const _updateProfileTarget = "update_profile";
 
-const _tournamentDirectory = "user";
-const _getTournamentTarget = "user";
-const _registerTournamentTarget = "user";
+const _tournamentDirectory = "championships";
+const _getTournamentTarget = "view";
+const _registerTournamentTarget = "user_add";
+const _checkTournamentTarget = "user";
 
 const _playDirectory = "user";
 const _getGroundsTarget = "user";

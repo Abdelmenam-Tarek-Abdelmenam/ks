@@ -16,8 +16,7 @@ class DefaultFormField extends StatelessWidget {
       this.suffix,
       this.onChanged,
       this.onTab,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   final TextEditingController controller;
   final String? fillHint;

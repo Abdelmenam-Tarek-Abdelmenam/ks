@@ -7,8 +7,7 @@ import '../../resources/string_manager.dart';
 import 'widgets/gradient_container.dart';
 
 class GradientScaffold extends StatelessWidget {
-  const GradientScaffold({required this.child, this.action,this.title, Key? key})
-      : super(key: key);
+  const GradientScaffold({required this.child, this.action,this.title, super.key});
   final Widget child;
   final Widget? action;
   final String? title;

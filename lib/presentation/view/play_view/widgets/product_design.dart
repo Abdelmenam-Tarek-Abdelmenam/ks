@@ -10,7 +10,7 @@ import '../../../shared/widget/error_image.dart';
 
 class ProductDesign extends StatelessWidget {
   final Product item;
-  const ProductDesign(this.item, {Key? key}) : super(key: key);
+  const ProductDesign(this.item, {super.key});
 
   @override
   Widget build(BuildContext context) {

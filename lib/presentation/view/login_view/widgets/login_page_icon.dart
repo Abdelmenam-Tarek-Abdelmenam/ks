@@ -7,7 +7,7 @@ import '../../../resources/asstes_manager.dart';
 import '../../../resources/styles_manager.dart';
 
 class LoginPageIcon extends StatelessWidget {
-  const LoginPageIcon({Key? key}) : super(key: key);
+  const LoginPageIcon({super.key});
 
   @override
   Widget build(BuildContext context) {

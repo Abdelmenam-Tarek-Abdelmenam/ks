@@ -38,7 +38,7 @@ class TournamentsView extends StatelessWidget {
                     children: [
                       TopWidget(
                           bottom: 10,
-                          child: ActiveTournamentsList(state.active)),
+                          child: OldTournamentsList(state.other)),
                       Padding(
                         padding: PaddingManager.p15,
                         child: rightBuild(context, state),
@@ -58,12 +58,13 @@ class TournamentsView extends StatelessWidget {
   Widget rightBuild(BuildContext context, TournamentState state) {
     switch (state.status) {
       case BlocStatus.idle:
-        return TournamentsList(state.other);
+        return TournamentsList(state.active);
       case BlocStatus.gettingData:
+        endRefresh();
         return const LoadingText();
       case BlocStatus.getData:
         endRefresh();
-        return TournamentsList(state.other);
+        return TournamentsList(state.active);
       case BlocStatus.error:
         endRefresh();
         return const ErrorView();

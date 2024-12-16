@@ -18,7 +18,6 @@ class _VideoShowPageState extends State<VideoShowPage> {
     super.initState();
     _controller = VideoPlayerController.asset(AssetsManager.alaminVideo)
       ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
       });
   }

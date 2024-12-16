@@ -8,8 +8,8 @@ import '../../../resources/string_manager.dart';
 import '../../../resources/styles_manager.dart';
 import 'tournament_card.dart';
 
-class ActiveTournamentsList extends StatelessWidget {
-  const ActiveTournamentsList(this.tournaments, {super.key});
+class OldTournamentsList extends StatelessWidget {
+  const OldTournamentsList(this.tournaments, {super.key});
   final List<Tournament> tournaments;
 
   @override

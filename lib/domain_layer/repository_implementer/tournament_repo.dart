@@ -8,17 +8,32 @@ import 'error_state.dart';
 class TournamentRepository {
   Future<Either<Failure, AllTournament>> getTournament() async {
     try {
-      List<Map<String, dynamic>> data = await ApiCall.instance.getTournament();
-      return Right(AllTournament.fromJson(data));
+      List<dynamic> data = await ApiCall.instance.getTournament();
+      return Right(AllTournament.fromJson(List<Map<String,dynamic>>.from(data)));
+    } on Failure catch (err) {
+      return Left(err);
+    } catch (_,s) {
+      print(_);
+      print(s);
+      return const Left(Failure("حدث خطأ اثناء تحميل البيانات"));
+    }
+  }
+
+
+  Future<Either<Failure, bool>> checkRegistered(String id) async {
+    try {
+      bool isRegistered = await ApiCall.instance.checkRegistered(id);
+      return Right(isRegistered);
     } on Failure catch (err) {
       return Left(err);
     } catch (_) {
+
       return const Left(Failure("حدث خطأ اثناء تحميل البيانات"));
     }
   }
 
   Future<Either<Failure, void>> registerTournament(Map<String,String> userData) async {
-    if(userData['name']!.isEmpty){
+    if(userData['team_name']!.isEmpty){
       return const Left(Failure("راجع البيانات المدخله"));
     }
 
@@ -47,11 +62,11 @@ class AllTournament {
     List<Tournament> all = data.map((e) => Tournament.fromJson(e!)).toList();
 
     List<Tournament> active = all.where((e) {
-      return !e.isActive;
+      return e.isActive;
     }).toList();
 
     List<Tournament> other = all.where((e) {
-      return e.isActive;
+      return !e.isActive;
     }).toList();
 
     return AllTournament(active: active, other: other);

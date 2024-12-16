@@ -12,8 +12,7 @@ class SplashView extends StatefulWidget {
       this.action,
       this.title,
       this.showDivider = true,
-      Key? key})
-      : super(key: key);
+      super.key});
   final Widget child;
   final String? title;
   final Widget? menuIcon;
