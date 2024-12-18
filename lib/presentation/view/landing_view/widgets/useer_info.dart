@@ -60,7 +60,6 @@ class UserInfo extends StatelessWidget {
                       try {
                         Map<String, dynamic> data =
                             await ApiCall.instance.getMyProducts();
-                        print(data);
 
                         if(data.isNotEmpty){
                           showSubscriptionDialog(context , data['name_sub'] , data['end_date']);
