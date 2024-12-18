@@ -6,6 +6,7 @@ enum AuthStatus {
   successLogIn,
   successSignUp,
   error,
+  userChange,
 }
 
 enum AuthModes { login, signUp }

@@ -26,7 +26,7 @@ class AppUser extends DefaultUser {
   String? nationalId;
   String? birthDate;
   String? city;
-
+  final String youtubeLink;
   ParentData parentData;
 
   double? weight;
@@ -42,6 +42,7 @@ class AppUser extends DefaultUser {
 
   AppUser({
     required this.id,
+    required this.youtubeLink,
     this.photoUrl,
     this.phoneNumber,
     this.nationalId,
@@ -64,6 +65,7 @@ class AppUser extends DefaultUser {
         id: '',
         name: '',
         email: '',
+        youtubeLink: '',
         verified: false,
         parentData: ParentData.empty());
   }
@@ -85,6 +87,7 @@ class AppUser extends DefaultUser {
       'name_user': name,
       'phone_user': phoneNumber.toString(),
       'verified': verified?1 : 0,
+      'youtube_link': youtubeLink,
     };
 
     data.addAll(parentData.toJson);
@@ -94,13 +97,14 @@ class AppUser extends DefaultUser {
 
   // Create from JSON
   factory AppUser.fromJson(Map<String, dynamic> json, {String? email}) {
-    print(json['subtype']);
+    print(json['phone_user']);
     return AppUser(
+      youtubeLink: json['youtube_link'],
       id: (json['id']??json['id_user']).toString(),
       name: json['name_user'],
       nationalId: json['NID_user'],
       phoneNumber: json['phone_user'] ?? '',
-      verified: json['subtype'] != 0,
+      verified: json['sub_type'] != 0,
       email: email ?? json['email_user'],
       photoUrl: json['photo_user'],
       birthDate: json['birth_user'],

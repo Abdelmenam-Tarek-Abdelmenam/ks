@@ -2,7 +2,7 @@ class Product {
   final String name;
   final String provider;
   final String? picture;
-  double price;
+  int price;
   final String id;
 
   String get img => picture ?? 'https://m.gomhuriaonline.com/Upload/News/22-2-2024_15_17_23_GomhuriaOnline_161708607843.jpg';
@@ -17,9 +17,9 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         name: json["name_sub"],
-        provider: json["num_session"],
+        provider: '${ json["num_session"]} مرات حضور',
         price: json["price_sub"],
-        id: json["id_sub"],
+        id: json["id_sub"].toString(),
       );
 
 }

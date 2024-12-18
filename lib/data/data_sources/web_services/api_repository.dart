@@ -150,19 +150,15 @@ class ApiCall {
         directory: _playDirectory, target: _checkGroundsTarget, data: userData);
 
     if (data.containsKey('Success')) {
-      Map<String, dynamic> data = await makeRequest(
+      List<dynamic> data = await makeRequest(
           directory: _playDirectory,
           target: _registerGroundsTarget,
           data: userData);
 
-      return data.containsKey('Success');
+      return data[0] == 'Success';
     } else {
-      if (data['Error'] == 'Time slot is already reserved') {
-        throw const Failure('هذا الموعد محجوز بالفعل');
-      } else {
         throw Failure(data['Error']);
       }
-    }
   }
 
   Future<List<Map<String, dynamic>>> getProducts() async {

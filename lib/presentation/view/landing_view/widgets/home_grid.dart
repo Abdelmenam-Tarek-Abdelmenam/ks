@@ -1,3 +1,4 @@
+import 'package:final_projects/bloc/auth_bloc/auth_status_bloc.dart';
 import 'package:flutter/material.dart';
 
 
@@ -26,7 +27,7 @@ class HomeGrid extends StatelessWidget {
     GridItem(
         title: StringManger.leaderBoard,
         image: LottieManager.youtube,
-        route: "https://www.youtube.com/"),
+        route: AuthBloc.user.youtubeLink),
   ];
 
   @override

@@ -123,8 +123,8 @@ class OffersList extends StatelessWidget {
     return Padding(
       padding: PaddingManager.p2.copyWith(top: 0, bottom: 10),
       child: InkWell(
-        onTap: () => Navigator.of(context)
-            .pushNamed(Routes.product, arguments: (item.product)),
+        // onTap: () => Navigator.of(context)
+        //     .pushNamed(Routes.product, arguments: (item.product)),
         child: Card(
           color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.3),
           elevation: 0,

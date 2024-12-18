@@ -4,8 +4,8 @@ class Ground {
   String id;
   String name;
   String address;
-  double price;
-  String img;
+  int price;
+  String? img;
   String activeHours;
   List<String> amenities;
   List<String> images;
@@ -24,14 +24,14 @@ class Ground {
   });
 
   factory Ground.fromJson(Map<String, dynamic> json) => Ground(
-        id: json['id_court'],
+        id: json['id_court'].toString(),
         name: json['name_court'],
         address: json['addr_court'],
         price: json['price_court'],
         img: json['photo1_court'],
-        activeHours: json['activeHours'],
-        images: [json['activeHours'] , json['photo3_court'] ],
-        amenities: [service[json['service_court']]],
+        activeHours: json['activeHours']??'لا يوجد ساعات متاحه',
+        images: [json['photo2_court']??'' , json['photo3_court']??'' ],
+        amenities: [service[json['service_court']-1]],
         location: json['location_court'],
       );
 

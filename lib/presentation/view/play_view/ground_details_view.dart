@@ -21,25 +21,32 @@ class GroundDetailsView extends StatelessWidget {
     return GradientScaffold(
       title: ground.name,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: BlocBuilder<PlayBloc, PlayState>(
+      floatingActionButton: BlocConsumer<PlayBloc, PlayState>(
+        listener: (context, state) {
+          if (state.rGround == BlocStatus.getData) {
+            Navigator.of(context).pop();
+          }
+        },
         builder: (context, state) {
-          return state.rGround == BlocStatus.gettingData ? const CircularProgressIndicator():FloatingActionButton(
-            backgroundColor:
-                Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
-            child: const Icon(
-              Icons.book_online,
-            ),
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                context.read<PlayBloc>().add(RegisterGroundsEvent(
-                    GroundRegister(
-                        idCourt: ground.id,
-                        dateRsvCourt: dateController.text,
-                        startRsvCourt: startTimeController.text,
-                        endRsvCourt: endTimeController.text)));
-              }
-            },
-          );
+          return state.rGround == BlocStatus.gettingData
+              ? const CircularProgressIndicator()
+              : FloatingActionButton(
+                  backgroundColor:
+                      Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
+                  child: const Icon(
+                    Icons.book_online,
+                  ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      context.read<PlayBloc>().add(RegisterGroundsEvent(
+                          GroundRegister(
+                              idCourt: ground.id,
+                              dateRsvCourt: dateController.text,
+                              startRsvCourt: startTimeController.text,
+                              endRsvCourt: endTimeController.text)));
+                    }
+                  },
+                );
         },
       ),
       child: SingleChildScrollView(

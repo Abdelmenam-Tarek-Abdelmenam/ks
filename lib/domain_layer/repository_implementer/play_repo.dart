@@ -1,7 +1,10 @@
+import 'dart:ffi';
+
 import 'package:either_dart/either.dart';
 import 'package:final_projects/bloc/auth_bloc/auth_status_bloc.dart';
 import 'package:final_projects/data/data_sources/web_services/api_repository.dart';
 import 'package:final_projects/data/models/product.dart';
+import 'package:final_projects/domain_layer/date_extensions.dart';
 import '../../data/models/matches.dart';
 
 import 'error_state.dart';
@@ -31,6 +34,8 @@ class PlayRepository {
       List<Product> data = rowData.map((e) => Product.fromJson(e)).toList();
       return Right(data);
     } catch (_, __) {
+      print(_);
+      print(__);
       return const Left(Failure("Error happened while getting grounds"));
     }
   }
@@ -85,6 +90,7 @@ class GroundRegister {
   Map<String, String> get toJson {
 
     return {
+      'id_user': AuthBloc.user.id,
       'id_court': idCourt,
       'date_rsv_court': dateRsvCourt,
       'start_rsv_court':
@@ -97,13 +103,9 @@ class GroundRegister {
 
 class ProductRegister {
   final String idSub;
-  final String startDate; // Expected format: YYYY-MM-DD
-  final String endDate; // Expected format: YYYY-MM-DD
 
   ProductRegister({
     required this.idSub,
-    required this.startDate,
-    required this.endDate,
   });
 
   // Convert class instance to JSON
@@ -112,8 +114,8 @@ class ProductRegister {
     return {
       'id_user': AuthBloc.user.id,
       'id_sub': idSub,
-      'start_date': startDate,
-      'end_date': endDate,
+      'start_date': DateTime.now().formatDate,
+      'end_date': '',
     };
   }
 }

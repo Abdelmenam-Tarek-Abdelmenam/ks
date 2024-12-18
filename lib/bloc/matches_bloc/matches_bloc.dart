@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:either_dart/either.dart';
 import 'package:equatable/equatable.dart';
 import 'package:final_projects/data/models/product.dart';
+import 'package:final_projects/presentation/shared/toast_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -30,9 +31,9 @@ class PlayBloc extends Bloc<PlayEvent, PlayState> {
   Future<void> _changeViewTypeHandler(
       ChangeViewTypeEvent event, Emitter emit) async {
     emit(state.copyWith(type: event.type));
-    if (event.type == MatchesViewType.grounds) {
+    if (event.type == MatchesViewType.grounds && state.grounds.isEmpty) {
       await _getGroundsFirstData(emit);
-    } else if (event.type == MatchesViewType.store) {
+    } else if (event.type == MatchesViewType.store && state.products.isEmpty) {
       await _getProductData(emit);
     }
   }
@@ -80,9 +81,12 @@ class PlayBloc extends Bloc<PlayEvent, PlayState> {
           err.show;
           emit(state.copyWith(rGround: BlocStatus.error));
         },
-        (data) => emit(state.copyWith(
+        (data) {
+          showToast("تم الاشتراك بنجاح" , type: ToastType.success);
+          emit(state.copyWith(
               rGround: BlocStatus.getData,
-            )));
+            ));
+        });
   }
 
   Future<void> _registerProductHandler(
@@ -90,9 +94,15 @@ class PlayBloc extends Bloc<PlayEvent, PlayState> {
     emit(state.copyWith(rProduct: BlocStatus.gettingData));
     Either<Failure, void> all = await _repository.registerProduct(event.data);
     all.fold(
-        (_) => emit(state.copyWith(rProduct: BlocStatus.error)),
-        (data) => emit(state.copyWith(
+        (err) {
+          err.show;
+          emit(state.copyWith(rProduct: BlocStatus.error));
+        },
+        (data) {
+          showToast("تم الاشتراك بنجاح" , type: ToastType.success);
+          emit(state.copyWith(
               rProduct: BlocStatus.getData,
-            )));
+            ));
+        });
   }
 }

@@ -1,6 +1,9 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../bloc/matches_bloc/matches_bloc.dart';
 import '../../../../data/models/product.dart';
+import '../../../../domain_layer/repository_implementer/play_repo.dart';
 import '../../../resources/asstes_manager.dart';
 import '../../../resources/routes_manger.dart';
 
@@ -24,8 +27,34 @@ class ProductDesign extends StatelessWidget {
         borderRadius: StyleManager.border,
       ),
       child: InkWell(
-        onTap: () =>
-            Navigator.of(context).pushNamed(Routes.product, arguments: item),
+        onTap: () {
+
+          // set up the AlertDialog
+          AlertDialog alert = AlertDialog(
+            title: Text("تـاكيد الاشتراك"),
+            content: Text("هل انت متاكد انك تريد الاشتراك"),
+            actions: [
+              TextButton(
+                child: Text("نعم"),
+                onPressed: () {
+                  context.read<PlayBloc>().add(
+                      RegisterProductsEvent(ProductRegister(
+                          idSub: item.id)));
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+
+          // show the dialog
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return alert;
+            },
+          );
+
+        },
         child: LayoutBuilder(
           builder: (context, constraints) => Stack(
             children: [

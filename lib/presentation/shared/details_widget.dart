@@ -98,6 +98,7 @@ class ImagesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    images.removeWhere((e) => e.isEmpty);
     return Container(
       width: double.infinity,
       padding: PaddingManager.p10,
@@ -122,13 +123,16 @@ class ImagesList extends StatelessWidget {
                       autoPlay: false,
                     ),
                     items: images
-                        .map((e) => ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: ErrorImage(
-                                e,
-                                fit: BoxFit.fitHeight,
+                        .map((e) => Visibility(
+                      visible: e.isNotEmpty,
+                          child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Base64Image(
+                                  e,
+                                  fit: BoxFit.fitHeight,
+                                ),
                               ),
-                            ))
+                        ))
                         .toList(),
                   ),
                 )

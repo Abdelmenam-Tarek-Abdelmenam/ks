@@ -384,6 +384,7 @@ class UserInfoView extends StatelessWidget {
                             context.read<UserInfoBloc>().add(RegisterDataEvent(
                                 AppUser(
                                   id: AuthBloc.user.id,
+                                  youtubeLink: AuthBloc.user.youtubeLink,
                                   photoUrl: convertImageToBase64(_image) ??
                                       AuthBloc.user.photoUrl,
                                   email: AuthBloc.user.email,

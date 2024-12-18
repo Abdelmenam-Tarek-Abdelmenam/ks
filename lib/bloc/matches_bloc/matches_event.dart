@@ -43,5 +43,5 @@ class RegisterProductsEvent extends PlayEvent {
   const RegisterProductsEvent(this.data);
 
   @override
-  List<Object> get props => [data.idSub , data.startDate,data.endDate];
+  List<Object> get props => [data.idSub];
 }

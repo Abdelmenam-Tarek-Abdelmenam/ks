@@ -1,3 +1,4 @@
+import 'package:final_projects/presentation/shared/widget/error_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:lottie/lottie.dart';
@@ -10,8 +11,8 @@ import '../../../resources/styles_manager.dart';
 import '../../../shared/widget/dividers.dart';
 
 class GroundsWidget extends StatelessWidget {
-   const GroundsWidget(this.grounds,{super.key});
-   final List<Ground> grounds ;
+  const GroundsWidget(this.grounds, {super.key});
+  final List<Ground> grounds;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,10 @@ class GroundDesign extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary.withOpacity(0.65),
         image: DecorationImage(
-          image: NetworkImage(item.img),
+          image: (item.img == null)
+              ? const NetworkImage(
+                  'https://static.hellooha.com/uploads/thumbs/articles/original/deugymxkixj95_article.jpg')
+              : Base64Image(item.img!) as ImageProvider,
           fit: BoxFit.cover,
           colorFilter:
               ColorFilter.mode(Colors.black.withOpacity(0.6), BlendMode.darken),

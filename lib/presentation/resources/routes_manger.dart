@@ -26,7 +26,7 @@ class Routes {
   static const String customerSupport = "/customerSupport";
   static const String groundDetails = "/GroundDetailsView";
   static const String tournamentsDetails = "/tournamentsDetails";
-  static const String product = "/product";
+  // static const String product = "/product";
   static const String video = "/video";
 }
 
@@ -52,9 +52,9 @@ class RouteGenerator {
       case Routes.groundDetails:
         return MaterialPageRoute(
             builder: (_) => GroundDetailsView(settings.arguments as Ground));
-      case Routes.product:
-        return MaterialPageRoute(
-            builder: (_) => ProductView(settings.arguments as Product));
+      // case Routes.product:
+        // return MaterialPageRoute(
+        //     builder: (_) => ProductView(settings.arguments as Product));
       case Routes.tournamentsDetails:
         return MaterialPageRoute(
             builder: (_) =>
