@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:either_dart/either.dart';
 import 'package:equatable/equatable.dart';
+import 'package:final_projects/bloc/auth_bloc/auth_status_bloc.dart';
+import 'package:final_projects/data/data_sources/pref_repository.dart';
+import 'package:final_projects/data/models/app_user.dart';
 import '../../domain_layer/repository_implementer/error_state.dart';
 import '../../domain_layer/repository_implementer/sigining_repo.dart';
 
@@ -19,17 +22,25 @@ class UserInfoBloc extends Bloc<UserInfoEvent, InfoStates> {
     emit(state.copyWith(mode: event.mode));
   }
 
-  Future<void> _registerDataHandler(RegisterDataEvent event, Emitter<InfoStates> emit) async {
+  Future<void> _registerDataHandler(
+      RegisterDataEvent event, Emitter<InfoStates> emit) async {
     emit(state.copyWith(status: InfoStatus.loading));
 
-    Either<Failure, void> all =
-        await _repository.editUser(event.toJson);
-    all.fold((err) {
+    Either<Failure, void> all = await _repository.editUser(event.toJson);
+    await all.fold((err) {
       err.show;
       emit(state.copyWith(status: InfoStatus.error));
-    },
-        (data) => emit(state.copyWith(
-              status: InfoStatus.done,
-            )));
+    }, (data) async {
+      AuthBloc.user = event.temp;
+      PreferenceRepository.putData(
+          value: event.temp.toJson, key: PreferenceKey.userData);
+      emit(state.copyWith(
+        status: InfoStatus.done,
+      ));
+      await Future.delayed(const Duration(seconds: 3));
+      emit(state.copyWith(
+        status: InfoStatus.initial,
+      ));
+    });
   }
 }

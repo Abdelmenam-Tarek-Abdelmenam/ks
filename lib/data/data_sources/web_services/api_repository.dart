@@ -51,13 +51,13 @@ class ApiCall {
   Future<Map<String, dynamic>> signIn(Map<String, String> userData) async {
     await _preCheck();
 
-    List<dynamic> data = await makeRequest(
+    Map<String, dynamic> data = await makeRequest(
         directory: _userDirectory, target: _logInTarget, data: userData);
 
     if (data[0] == "Error") {
       throw LoginErrors.fromCode(int.tryParse(data[1]) ?? 10);
     } else {
-      return data[1];
+      return data['Data'];
     }
   }
 
@@ -67,7 +67,8 @@ class ApiCall {
     List<dynamic> data = await makeRequest(
         directory: _userDirectory,
         target: _getProfileTarget,
-        data: {"userId": id});
+        data: {"id_user": id},
+        isGet: true);
 
     if (data[0] == "Error") {
       throw const Failure();
@@ -79,16 +80,12 @@ class ApiCall {
   Future<bool> editUserData(Map<String, String> userData) async {
     await _preCheck();
 
-    List<dynamic> data = await makeRequest(
+    Map<String, dynamic> data = await makeRequest(
         directory: _userDirectory,
         target: _updateProfileTarget,
         data: userData);
 
-    if (data[0] == "Error") {
-      return false;
-    } else {
-      return true;
-    }
+    return data.containsKey('Success');
   }
 
   Future<List<dynamic>> getTournament() async {
@@ -106,7 +103,7 @@ class ApiCall {
     }
   }
 
-  Future<Map<String, dynamic> > checkRegistered(String id) async {
+  Future<Map<String, dynamic>> checkRegistered(String id) async {
     await _preCheck();
 
     Map<String, dynamic> data = await makeRequest(
@@ -116,9 +113,9 @@ class ApiCall {
 
     if (data.containsKey('Success')) {
       return data['Data'];
-    } else if(data['Error'] == 'No subscription found'){
+    } else if (data['Error'] == 'No subscription found') {
       return {};
-    }else{
+    } else {
       throw const Failure("حدث خطأ اثناء طلب البيانات");
     }
   }
@@ -132,25 +129,63 @@ class ApiCall {
         data: userData);
 
     return data.containsKey('Success');
-
   }
 
   Future<List<Map<String, dynamic>>> getGrounds() async {
     await _preCheck();
 
-    List<Map<String, dynamic>> data =
+    List<dynamic> data =
         await makeRequest(directory: _playDirectory, target: _getGroundsTarget);
+    if (data[0] == "Error") {
+      throw const Failure();
+    } else {
+      return List<Map<String, dynamic>>.from(data[1]);
+    }
+  }
 
-    return data;
+  Future<bool> registerGround(Map<String, String> userData) async {
+    await _preCheck();
+
+    Map<String, dynamic> data = await makeRequest(
+        directory: _playDirectory, target: _checkGroundsTarget, data: userData);
+
+    if (data.containsKey('Success')) {
+      Map<String, dynamic> data = await makeRequest(
+          directory: _playDirectory,
+          target: _registerGroundsTarget,
+          data: userData);
+
+      return data.containsKey('Success');
+    } else {
+      if (data['Error'] == 'Time slot is already reserved') {
+        throw const Failure('هذا الموعد محجوز بالفعل');
+      } else {
+        throw Failure(data['Error']);
+      }
+    }
   }
 
   Future<List<Map<String, dynamic>>> getProducts() async {
     await _preCheck();
 
-    List<Map<String, dynamic>> data = await makeRequest(
-        directory: _playDirectory, target: _getProductsTarget);
+    Map<String, dynamic> data = await makeRequest(
+        directory: _subDirectory, target: _getProductsTarget, isGet: true);
 
-    return data;
+    if (data['Error'] == 'No subscriptions found') {
+      return [];
+    }
+    return List<Map<String, dynamic>>.from(data['Data']);
+  }
+
+  Future<bool> registerProduct(Map<String, String> userData) async {
+    await _preCheck();
+
+    Map<String, dynamic> data = await makeRequest(
+        directory: _subDirectory,
+        target: _registerProductsTarget,
+        data: userData);
+
+    return data.containsKey('Success');
   }
 
   Future<void> _preCheck() async {
@@ -170,14 +205,19 @@ extension Check on Connectivity {
 const _userDirectory = "user";
 const _signUpTarget = "signup";
 const _logInTarget = "login";
-const _getProfileTarget = "profile";
-const _updateProfileTarget = "update_profile";
+const _getProfileTarget = "check_profile";
+const _updateProfileTarget = "user_profile";
 
 const _tournamentDirectory = "championships";
 const _getTournamentTarget = "view";
 const _registerTournamentTarget = "user_champ";
 const _checkTournamentTarget = "user_check";
 
-const _playDirectory = "user";
-const _getGroundsTarget = "user";
-const _getProductsTarget = "user";
+const _playDirectory = "court";
+const _getGroundsTarget = "list";
+const _registerGroundsTarget = "reserve";
+const _checkGroundsTarget = "check_av";
+
+const _subDirectory = "subscriptions";
+const _getProductsTarget = "sub";
+const _registerProductsTarget = "add";

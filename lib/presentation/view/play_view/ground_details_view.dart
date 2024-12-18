@@ -1,31 +1,47 @@
+import 'package:final_projects/bloc/matches_bloc/matches_bloc.dart';
+import 'package:final_projects/bloc/status.dart';
+import 'package:final_projects/domain_layer/repository_implementer/play_repo.dart';
+import 'package:final_projects/presentation/shared/custom_scafffold/gradient_scaffold.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/models/matches.dart';
 import '../../resources/string_manager.dart';
 import '../../resources/styles_manager.dart';
-import '../../shared/custom_scafffold/sliding_scaffold.dart';
 import '../../shared/details_widget.dart';
+import '../../shared/widget/date_picker.dart';
 import '../../shared/widget/dividers.dart';
 
 class GroundDetailsView extends StatelessWidget {
-  const GroundDetailsView(this.ground, {super.key});
+  GroundDetailsView(this.ground, {super.key});
   final Ground ground;
 
   @override
   Widget build(BuildContext context) {
-    return SlidingScaffold(
+    return GradientScaffold(
       title: ground.name,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor:
-            Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
-        child: const Icon(
-          Icons.book_online,
-        ),
-        onPressed: () {},
+      floatingActionButton: BlocBuilder<PlayBloc, PlayState>(
+        builder: (context, state) {
+          return state.rGround == BlocStatus.gettingData ? const CircularProgressIndicator():FloatingActionButton(
+            backgroundColor:
+                Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
+            child: const Icon(
+              Icons.book_online,
+            ),
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                context.read<PlayBloc>().add(RegisterGroundsEvent(
+                    GroundRegister(
+                        idCourt: ground.id,
+                        dateRsvCourt: dateController.text,
+                        startRsvCourt: startTimeController.text,
+                        endRsvCourt: endTimeController.text)));
+              }
+            },
+          );
+        },
       ),
-
       child: SingleChildScrollView(
         child: Padding(
           padding: PaddingManager.p15,
@@ -48,20 +64,17 @@ class GroundDetailsView extends StatelessWidget {
               Dividers.h5,
               ImagesList(ground.images),
               Dividers.h10,
-              AddressBox(ground.address, ground.lat, ground.lon),
+              AddressBox(ground.address, ground.location),
               Dividers.h10,
               Text(
-                StringManger.reviews,
+                "معلومات الحجز",
                 style: Theme.of(context)
                     .textTheme
                     .displayMedium!
                     .copyWith(fontSize: 18),
               ),
-              Dividers.h5,
-              ReviewList(ground.reviews),
-              const SizedBox(
-                height: 100,
-              ),
+              Dividers.h10,
+              registrationWidget(context)
             ],
           ),
         ),
@@ -69,10 +82,72 @@ class GroundDetailsView extends StatelessWidget {
     );
   }
 
+  final TextEditingController dateController = TextEditingController();
+  final TextEditingController startTimeController = TextEditingController();
+  final TextEditingController endTimeController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  Widget registrationWidget(BuildContext context) => Container(
+        width: double.infinity,
+        padding: PaddingManager.p10,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.6),
+          borderRadius: StyleManager.border,
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              CustomDateTimePicker(
+                labelText: 'تاريخ الحجز',
+                controller: dateController,
+                isReverse: false,
+                onValidate: (d) {
+                  if (d == null || d.isEmpty) {
+                    return 'يرجي ملئ التاريخ';
+                  }
+                  return null;
+                },
+              ),
+              Dividers.h5,
+              Row(
+                textDirection: TextDirection.rtl,
+                children: [
+                  Expanded(
+                    child: CustomTimePicker(
+                      labelText: 'وقت البدايه ',
+                      controller: startTimeController,
+                      onValidate: (d) {
+                        if (d == null || d.isEmpty) {
+                          return 'يرجي ملئ الوقت';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Dividers.w10,
+                  Expanded(
+                    child: CustomTimePicker(
+                      labelText: 'وقت النهايه ',
+                      controller: endTimeController,
+                      onValidate: (d) {
+                        if (d == null || d.isEmpty) {
+                          return 'يرجي ملئ الوقت';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+
   Widget priceText(BuildContext context) => BackGround(
           child: Row(
-            textDirection: TextDirection.rtl,
-
+        textDirection: TextDirection.rtl,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
@@ -94,9 +169,8 @@ class GroundDetailsView extends StatelessWidget {
       ));
 
   Widget hoursText(BuildContext context) => BackGround(
-
           child: Row(
-            textDirection: TextDirection.rtl,
+        textDirection: TextDirection.rtl,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
@@ -116,4 +190,3 @@ class GroundDetailsView extends StatelessWidget {
         ],
       ));
 }
-

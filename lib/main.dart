@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/auth_bloc/auth_status_bloc.dart';
 import 'bloc/my_bloc_observer.dart';
 
-
 import 'bloc/user_info_bloc/user_info_status_bloc.dart';
 import 'data/data_sources/pref_repository.dart';
 import 'data/models/app_user.dart';
@@ -19,15 +18,14 @@ import 'presentation/resources/theme/theme_manager.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await PreferenceRepository.init();
-  
+
   Bloc.observer = MyBlocObserver();
 
   String? userData = PreferenceRepository.getData(key: PreferenceKey.userData);
-
+  print(userData);
   AppUser? user =
       userData == null ? null : AppUser.fromJson(json.decode(userData));
   runApp(MyApp(user));
-  
 }
 
 class MyApp extends StatelessWidget {
@@ -43,7 +41,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => PlayBloc()),
         ],
         child: Directionality(
-          textDirection : TextDirection.rtl,
+          textDirection: TextDirection.rtl,
           child: MaterialApp(
             title: StringManger.appName,
             theme: lightThemeData,

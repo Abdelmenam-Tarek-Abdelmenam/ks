@@ -1,9 +1,9 @@
 import 'package:final_projects/presentation/resources/theme/theme_manager.dart';
+import 'package:final_projects/presentation/shared/widget/error_image.dart';
 import 'package:flutter/material.dart';
 
 
 import '../../../../bloc/auth_bloc/auth_status_bloc.dart';
-import '../../../shared/widget/avatar.dart';
 
 class UserInfo extends StatelessWidget {
   const UserInfo({super.key});
@@ -19,8 +19,12 @@ class UserInfo extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 18.0),
             child: Hero(
               tag: "image",
-              child: Avatar(
-                AuthBloc.user.photoUrl ?? "https://www.shareicon.net/download/2016/06/27/787159_people_512x512.png",
+              child: AuthBloc.user.photoUrl == null
+                  ? const ErrorImage(
+                  "https://www.shareicon.net/download/2016/06/27/787159_people_512x512.png",
+                  fit: BoxFit.fill)
+                  : Base64Image(
+                AuthBloc.user.photoUrl !,
                 width: 100,
               ),
             ),
@@ -35,15 +39,15 @@ class UserInfo extends StatelessWidget {
                 backgroundColor: ColorManager.darkBlue,
                 fixedSize: const Size(100, 20)
               ),
-                icon: const Icon(Icons.verified,size: 20,color: Colors.yellow,),
+                icon:  Icon(AuthBloc.user.verified ? Icons.verified : Icons.not_interested,size: 20,color: AuthBloc.user.verified ? Colors.yellow : Colors.redAccent,),
                 onPressed: () {},
-                label: const Text("مشترك" , style: TextStyle(fontSize: 16,color: Colors.yellow,),)),
+                label:  Text(  "مشترك" , style: TextStyle(fontSize: 16,color: AuthBloc.user.verified ? Colors.yellow : Colors.redAccent,),)),
           ),
         ),
         Positioned(
           bottom: 0,
           child: Text(
-           "Abdelmenam Tarek",
+            AuthBloc.user.name,
             // AuthBloc.user.name ?? StringManger.appUser,
             style: Theme.of(context).textTheme.displayLarge!.copyWith(
                   fontWeight: FontWeight.w100,

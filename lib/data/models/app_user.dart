@@ -23,18 +23,16 @@ class AppUser extends DefaultUser {
   bool verified;
 
   String? phoneNumber;
-  int? nationalId;
+  String? nationalId;
   String? birthDate;
-  String? academicYear;
   String? city;
 
-  ParentData? parentData;
+  ParentData parentData;
 
-  int? weight;
-  int? height;
+  double? weight;
+  double? height;
   bool? playedBefore;
   String? experience;
-  String? startPlaying;
   PlayType? playType;
 
   @override
@@ -50,13 +48,11 @@ class AppUser extends DefaultUser {
     this.birthDate,
     this.height,
     this.weight,
-    this.academicYear,
-    this.parentData,
+    required this.parentData ,
     this.city,
     this.playedBefore,
     this.playType,
     this.experience,
-    this.startPlaying,
     this.verified = false,
     required super.name,
     required super.email,
@@ -74,66 +70,69 @@ class AppUser extends DefaultUser {
 
   // Convert to JSON
   Map<String, dynamic> get toJson {
-    return {
-      'id': id,
-      'email': email,
-      'photoUrl': photoUrl,
-      'name': name,
-      'phone': phoneNumber,
-      'nationalId': nationalId,
-      'academicYear': academicYear,
-      'parentData': parentData?.toJson ?? {},
-      'height': height,
-      'experience': height,
-      'weight': weight,
-      'city': city,
-      'date': birthDate,
-      'playedBefore': playedBefore,
-      'startPlaying': playedBefore,
-      'playType': (playType ?? PlayType.unknown).index,
-      'verified': verified,
+    Map<String,dynamic> data =  {
+      'id_user': id,
+      'NID_user': nationalId??'',
+      'photo_user': photoUrl,
+      'birth_user': birthDate,
+      'grade_user': height,
+      'city_user': city,
+      'height_user': height,
+      'weight_user': weight,
+      'leg_user': ((playType ?? PlayType.rightFoot).index + 1) ,
+      'play_before': (playedBefore??false)?1 : 0,
+      'email_user': email,
+      'name_user': name,
+      'phone_user': phoneNumber.toString(),
+      'verified': verified?1 : 0,
     };
+
+    data.addAll(parentData.toJson);
+
+    return data;
   }
 
   // Create from JSON
   factory AppUser.fromJson(Map<String, dynamic> json, {String? email}) {
+    print(json['subtype']);
     return AppUser(
-      id: json['id'].toString(),
-      name: json['name'],
-      phoneNumber: json['phone'] ?? '',
+      id: (json['id']??json['id_user']).toString(),
+      name: json['name_user'],
+      nationalId: json['NID_user'],
+      phoneNumber: json['phone_user'] ?? '',
       verified: json['subtype'] != 0,
-      email: email ?? json['email'],
-      photoUrl: json['photoUrl'],
-      parentData: ParentData.fromJson(json['parentData'] ?? {}),
-      experience: json['experience'],
-      nationalId: json['nationalId'],
-      academicYear: json['academicYear'],
-      city: json['city'],
-      playedBefore: json['playedBefore'],
-      startPlaying: json['startPlaying'],
-      height: json['height'],
-      birthDate: json['date'],
-      weight: json['weight'],
-      playType: PlayType.values[json['playType'] ?? 2],
+      email: email ?? json['email_user'],
+      photoUrl: json['photo_user'],
+      birthDate: json['birth_user'],
+      experience: json['grade_user'].toString(),
+      city: json['city_user'],
+      height: json['height_user']?.toDouble(),
+      weight: json['weight_user']?.toDouble(),
+      playType: PlayType.values[(json['leg_user']??1)-1],
+      playedBefore: json['play_before'] == 1,
+      parentData: ParentData.fromJson(json),
     );
   }
 
   void updateFromJson(Map<String, dynamic> json) {
-    name = json['name'] ?? name;
-    phoneNumber = json['phone'] ?? phoneNumber;
-    email = json['email'] ?? email  ;
-    photoUrl = json['photoUrl'] ?? photoUrl;
-    parentData = json['parentData']!=null ? ParentData.fromJson(json['parentData']) : parentData;
-    experience = json['experience'] ?? experience;
-    nationalId = json['nationalId']??nationalId;
-    academicYear = json['academicYear']??academicYear;
-    city = json['city']??city;
-    playedBefore = json['playedBefore']??playedBefore;
-    startPlaying = json['startPlaying']??startPlaying;
-    height = json['height']??height;
-    birthDate = json['date']??birthDate;
-    weight = json['weight']??weight;
-    playType = json['playType'] != null ? PlayType.values[json['playType'] ?? 2] :  playType;
+    name= json['name_user'];
+    nationalId= json['NID_user']??name;
+    phoneNumber= json['phone_user'] ?? phoneNumber;
+    email=  json['email_user'] ?? email;
+    photoUrl= json['photo_user'] ?? photoUrl;
+    birthDate= json['birth_user'] ?? birthDate;
+    experience= json['grade_user']??experience;
+    city= json['city_user']?? city ;
+    height= json['height_user']?? height;
+    weight= json['weight_user'] ?? weight;
+    playType= PlayType.values[json['leg_user']-1];
+    playedBefore= json['play_before'] == 1;
+    parentData.name = json['name_parent']?? parentData.name;
+    parentData.id = json['NID_parent']?? parentData.id;
+    parentData.job = json['job_parent']?? parentData.id;
+    parentData.phone = json['phone_parent']?? parentData.phone;
+    parentData.address = json['addr_parent']?? parentData.address;
+
   }
 
   bool get isEmpty => id == '';
@@ -155,13 +154,13 @@ class ParentData {
   });
 
   // Convert to JSON
-  Map<String, dynamic> get toJson {
+  Map<String, String> get toJson {
     return {
-      'name': name,
-      'id': id,
-      'job': job,
-      'address': address,
-      'phone': phone,
+      'name_parent': name,
+      'NID_parent': id,
+      'job_parent': job,
+      'addr_parent': address,
+      'phone_parent': phone,
     };
   }
 
@@ -179,16 +178,16 @@ class ParentData {
   // Create from JSON
   factory ParentData.fromJson(Map<String, dynamic> json) {
     return ParentData(
-      name: json['name'] ?? '',
-      id: json['id'] ?? '',
-      job: json['job'] ?? '',
-      phone: json['phone'] ?? '',
-      address: json['address'] ?? '',
+      name: json['name_parent'] ?? '',
+      id: json['NID_parent'] ?? '',
+      job: json['job_parent'] ?? '',
+      phone: json['phone_parent'] ?? '',
+      address: json['addr_parent'] ?? '',
     );
   }
 }
 
-enum PlayType { rightFoot, leftFoot, unknown }
+enum PlayType { rightFoot, leftFoot }
 
 // Extension to add a custom Arabic `toString` method
 extension PlayTypeExtension on PlayType {
@@ -198,9 +197,6 @@ extension PlayTypeExtension on PlayType {
         return 'قدم يمنى';
       case PlayType.leftFoot:
         return 'قدم يسرى';
-      case PlayType.unknown:
-      default:
-        return 'كلاهما';
     }
   }
 
@@ -210,10 +206,6 @@ extension PlayTypeExtension on PlayType {
         return const Icon(Icons.directions_run);
       case PlayType.leftFoot:
         return const Icon(Icons.directions_walk);
-
-      case PlayType.unknown:
-      default:
-        return const Icon(Icons.help_outline);
     }
   }
 }

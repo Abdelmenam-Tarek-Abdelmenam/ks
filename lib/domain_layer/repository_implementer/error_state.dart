@@ -7,7 +7,7 @@ class Failure implements Exception {
   final String message;
 
   const Failure([
-    this.message = 'An unknown exception occurred.',
+    this.message = 'حدث خطأ غير معرف',
   ]);
 
   factory Failure.fromError(Exception exception) {

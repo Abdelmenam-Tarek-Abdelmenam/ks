@@ -60,10 +60,10 @@ class FacilitiesList extends StatelessWidget {
 }
 
 class AddressBox extends StatelessWidget {
-  const AddressBox(this.address, this.lat, this.lon, {super.key});
+  const AddressBox(this.address, this.loc, {super.key});
   final String address;
-  final double lat;
-  final double lon;
+  final String loc;
+  // final double lon;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,7 @@ class AddressBox extends StatelessWidget {
               Theme.of(context).textTheme.displayMedium!.copyWith(fontSize: 16),
         )),
         InkWell(
-          onTap: () => launchMapsUrl(lat, lon),
+          onTap: () => launchMapsUrl(loc),
           child: CircleAvatar(
             backgroundColor:
                 Theme.of(context).colorScheme.onPrimary.withOpacity(0.6),

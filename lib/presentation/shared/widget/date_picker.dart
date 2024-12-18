@@ -8,8 +8,9 @@ class CustomDateTimePicker extends StatefulWidget {
      required this.labelText,
      required this.controller,
       this.onValidate,
-      this.onSaved});
+      this.onSaved , this.isReverse = true});
 
+  final bool isReverse;
   final TextEditingController controller ;
   final String labelText;
   final String? Function(String?)? onValidate;
@@ -27,6 +28,7 @@ class _CustomDateTimePickerState extends State<CustomDateTimePicker> {
       controller: widget.controller,
       title: widget.labelText,
       keyboardType: TextInputType.none,
+      validator: widget.onValidate,
       onTab: () => showPicker(context),
     );
   }
@@ -34,9 +36,9 @@ class _CustomDateTimePickerState extends State<CustomDateTimePicker> {
   Future<void> showPicker(BuildContext context) async {
     DateTime? selectedDate = await showDatePicker(
       context: context,
-      initialDate: widget.controller.text.parseDate,
-      firstDate: DateTime(1990),
-      lastDate: DateTime.now(),
+      initialDate: DateTime.now(),
+      firstDate: widget.isReverse ? DateTime(1990) : DateTime.now(),
+      lastDate: widget.isReverse ? DateTime.now() : DateTime(2050)
     );
 
     if (selectedDate != null && selectedDate != DateTime.now()) {
@@ -46,6 +48,52 @@ class _CustomDateTimePickerState extends State<CustomDateTimePicker> {
       });
       // FocusScope.of(context).unfocus();
       // print(selectedDate.formatDate);
+    }
+  }
+}
+
+
+class CustomTimePicker extends StatefulWidget {
+  const CustomTimePicker({
+    super.key,
+    required this.labelText,
+    required this.controller,
+    this.onValidate,
+    this.onSaved,
+  });
+
+  final TextEditingController controller;
+  final String labelText;
+  final String? Function(String?)? onValidate;
+  final Function(String?)? onSaved;
+
+  @override
+  State<CustomTimePicker> createState() => _CustomTimePickerState();
+}
+
+class _CustomTimePickerState extends State<CustomTimePicker> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultFormField(
+      controller: widget.controller,
+      title: widget.labelText,
+      keyboardType: TextInputType.none,
+      validator: widget.onValidate,
+      onTab: () => showTimePickerDialog(context),
+    );
+  }
+
+  Future<void> showTimePickerDialog(BuildContext context) async {
+    TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (selectedTime != null) {
+      // Format the time in HH:MM:SS format (or adjust according to your needs)
+      final formattedTime = selectedTime.format(context);  // Format like "HH:mm AM/PM"
+      widget.controller.text = formattedTime;
+      setState(() {});  // Update the UI
     }
   }
 }

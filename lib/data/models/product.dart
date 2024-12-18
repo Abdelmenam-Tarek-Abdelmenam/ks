@@ -4,9 +4,8 @@ class Product {
   final String? picture;
   double price;
   final String id;
-  List<String> reviews;
 
-  String get img => picture ?? "";
+  String get img => picture ?? 'https://m.gomhuriaonline.com/Upload/News/22-2-2024_15_17_23_GomhuriaOnline_161708607843.jpg';
 
   Product({
     required this.name,
@@ -14,26 +13,15 @@ class Product {
     this.picture,
     required this.price,
     required this.id,
-    required this.reviews,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-        name: json["name"],
-        provider: json["provider"],
-        price: json["price"],
-        picture: json['picture'],
-        id: json["id"],
-        reviews: List<String>.from(json['reviews'] ?? []),
+        name: json["name_sub"],
+        provider: json["num_session"],
+        price: json["price_sub"],
+        id: json["id_sub"],
       );
 
-  Map<String, dynamic> get toJson => {
-        "name": name,
-        "provider": provider,
-        "price": price,
-        "id": id,
-        'picture': picture,
-        'reviews': reviews,
-      };
 }
 
 class OfferItem {
@@ -44,7 +32,4 @@ class OfferItem {
 
   factory OfferItem.fromJson(Map<String, dynamic> json) =>
       OfferItem(product: Product.fromJson(json), oldPrice: json['oldPrice']);
-
-  Map<String, dynamic> get toJson =>
-      product.toJson..addAll({"oldPrice": oldPrice});
 }

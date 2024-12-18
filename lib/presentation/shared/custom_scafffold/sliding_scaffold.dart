@@ -18,12 +18,12 @@ class SlidingScaffold extends StatelessWidget {
       super.key});
   final Widget child;
   final bool showSliding;
-  final Widget? floatingActionButton;
   final Widget? action;
   final List<Widget>? bottomNavigationBar;
   final List<Widget>? tabs;
   final String title;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
+  final Widget? floatingActionButton;
 
   @override
   Widget build(BuildContext context) {

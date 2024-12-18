@@ -5,6 +5,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../bloc/matches_bloc/matches_bloc.dart';
 import '../../../bloc/status.dart';
+import '../../../data/models/matches.dart';
+import '../../../data/models/product.dart';
 import '../../resources/string_manager.dart';
 import '../../shared/custom_scafffold/sliding_scaffold.dart';
 import '../../shared/widget/error_widget.dart';
@@ -44,25 +46,26 @@ class MatchesView extends StatelessWidget {
                     if (state.type == MatchesViewType.grounds) {
                       switch (state.groundStatus) {
                         case BlocStatus.idle:
-                          return GroundsWidget(state.grounds);
+                          return GroundsWidget(grounds);
                         case BlocStatus.gettingData:
                           return const LoadingText();
                         case BlocStatus.getData:
                           endRefresh();
-                          return GroundsWidget(state.grounds);
+                          return GroundsWidget(grounds);
                         case BlocStatus.error:
                           endRefresh();
                           return const ErrorView();
                       }
                     } else if (state.type == MatchesViewType.store) {
+                      print(state.productsStatus);
                       switch (state.productsStatus) {
                         case BlocStatus.idle:
-                          return StoreView(state.products);
+                          return StoreView(products);
                         case BlocStatus.gettingData:
                           return const LoadingText();
                         case BlocStatus.getData:
                           endRefresh();
-                          return StoreView(state.products);
+                          return StoreView(products);
                         case BlocStatus.error:
                           endRefresh();
                           return const Center(child: ErrorView());
@@ -125,3 +128,60 @@ class MatchesView extends StatelessWidget {
     });
   }
 }
+
+
+
+final List<Ground> grounds = [
+  Ground(
+    id: '1',
+    name: 'Central Park Ground',
+    address: '123 Main St, New York, NY',
+    price: 50.0,
+    img: 'assets/images/ground1.jpg',
+    activeHours: '08:00 AM - 10:00 PM',
+    amenities: [service[0], service[2]], // 'Changing Room', 'Cafeteria'
+    images: [
+      'assets/images/ground1_1.jpg',
+      'assets/images/ground1_2.jpg',
+    ],
+    location: '40.785091, -73.968285',
+  ),
+  Ground(
+    id: '2',
+    name: 'Sunrise Sports Field',
+    address: '456 Elm St, Los Angeles, CA',
+    price: 75.0,
+    img: 'assets/images/ground2.jpg',
+    activeHours: '06:00 AM - 11:00 PM',
+    amenities: [service[1], service[2]], // 'Ball', 'Cafeteria'
+    images: [
+      'assets/images/ground2_1.jpg',
+      'assets/images/ground2_2.jpg',
+    ],
+    location: '34.052235, -118.243683',
+  ),
+];
+
+final List<Product> products = [
+  Product(
+    name: 'Wireless Headphones',
+    provider: 'TechStore Inc.',
+    picture: null,
+    price: 120.50,
+    id: 'P001',
+  ),
+  Product(
+    name: 'Smart Watch',
+    provider: 'Gadget World',
+    picture: null, // No picture provided
+    price: 80.00,
+    id: 'P002',
+  ),
+  Product(
+    name: 'Bluetooth Speaker',
+    provider: 'SoundWave Ltd.',
+    picture: null,
+    price: 45.99,
+    id: 'P003',
+  ),
+];

@@ -62,7 +62,7 @@ class _TournamentsDetailsState extends State<TournamentsDetails> {
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
         floatingActionButton: FloatingActionButton(
             tooltip: widget.tournament.address,
-            onPressed: () => launchMapsUrl(null, null),
+            onPressed: () => launchMapsUrl(null),
             child: Padding(
                 padding: const EdgeInsets.only(top: 2),
                 child: Lottie.asset(LottieManager.location))),

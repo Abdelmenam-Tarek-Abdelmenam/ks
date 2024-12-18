@@ -1,21 +1,24 @@
 import 'dart:math';
 
+import 'package:final_projects/domain_layer/repository_implementer/play_repo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-
+import '../../../bloc/matches_bloc/matches_bloc.dart';
+import '../../../bloc/status.dart';
 import '../../../data/models/product.dart';
-import '../../resources/string_manager.dart';
 import '../../resources/styles_manager.dart';
 
 import '../../resources/theme/theme_manager.dart';
 import '../../shared/custom_scafffold/sliding_scaffold.dart';
 import '../../shared/custom_scafffold/top_widget.dart';
-import '../../shared/details_widget.dart';
+
+import '../../shared/widget/date_picker.dart';
 import '../../shared/widget/dividers.dart';
 import '../../shared/widget/error_image.dart';
 
 class ProductView extends StatelessWidget {
-  const ProductView(this.product, {super.key});
+  ProductView(this.product, {super.key});
   final Product product;
 
   @override
@@ -82,11 +85,26 @@ class ProductView extends StatelessWidget {
                             .withOpacity(0.7),
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(30))),
-                    child: const Center(
-                      child: Text(
-                        "احجز الان",
-                        style: TextStyle(color: Colors.white),
-                      ),
+                    child: BlocBuilder<PlayBloc, PlayState>(
+                      builder: (context, state) {
+                        return state.rProduct == BlocStatus.gettingData ? const LinearProgressIndicator( backgroundColor: Colors.white,):InkWell(
+                          onTap: () {
+                            if (_formKey.currentState!.validate()) {
+                              context.read<PlayBloc>().add(
+                                  RegisterProductsEvent(ProductRegister(
+                                      idSub: product.id,
+                                      startDate: startTimeController.text,
+                                      endDate: endTimeController.text)));
+                            }
+                          },
+                          child: const Center(
+                            child: Text(
+                              "احجز الان",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      },
                     )),
               ),
             ]),
@@ -97,19 +115,71 @@ class ProductView extends StatelessWidget {
   Widget productDetails(BuildContext context) {
     return StatefulBuilder(builder: (context, setState) {
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            StringManger.reviews,
-            style:
-                Theme.of(context).textTheme.labelLarge!.copyWith(fontSize: 18),
+            "معلومات الحجز",
+            style: Theme.of(context)
+                .textTheme
+                .displayMedium!
+                .copyWith(fontSize: 18),
           ),
-          Dividers.h5,
-          ReviewList(product.reviews),
+          Dividers.h10,
+          registrationWidget(context)
         ],
       );
     });
   }
+
+  final TextEditingController startTimeController = TextEditingController();
+  final TextEditingController endTimeController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  Widget registrationWidget(BuildContext context) => Container(
+        width: double.infinity,
+        padding: PaddingManager.p10,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.6),
+          borderRadius: StyleManager.border,
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Row(
+                textDirection: TextDirection.rtl,
+                children: [
+                  Expanded(
+                    child: CustomDateTimePicker(
+                      labelText: 'وقت البدايه ',
+                      controller: startTimeController,
+                      onValidate: (d) {
+                        if (d == null || d.isEmpty) {
+                          return 'يرجي ملئ الوقت';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  Dividers.w10,
+                  Expanded(
+                    child: CustomDateTimePicker(
+                      labelText: 'وقت النهايه ',
+                      controller: endTimeController,
+                      onValidate: (d) {
+                        if (d == null || d.isEmpty) {
+                          return 'يرجي ملئ الوقت';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
 
   Widget myIcon(
       BuildContext context, IconData icon, void Function() onPressed) {

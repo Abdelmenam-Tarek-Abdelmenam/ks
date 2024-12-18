@@ -26,29 +26,31 @@ class UserInfoView extends StatelessWidget {
 
   // Centralized controller mapping for better organization
   final Map<String, TextEditingController> controllers = {
-    "parentName": TextEditingController(text: AuthBloc.user.parentData?.name),
-    "parentPhone": TextEditingController(text: AuthBloc.user.parentData?.phone),
-    "parentId": TextEditingController(text: AuthBloc.user.parentData?.id),
-    "parentJob": TextEditingController(text: AuthBloc.user.parentData?.job),
+    "parentName": TextEditingController(text: AuthBloc.user.parentData.name),
+    "parentPhone": TextEditingController(text: AuthBloc.user.parentData.phone),
+    "parentId": TextEditingController(text: AuthBloc.user.parentData.id),
+    "parentJob": TextEditingController(text: AuthBloc.user.parentData.job),
     "parentAddress":
-        TextEditingController(text: AuthBloc.user.parentData?.address),
+        TextEditingController(text: AuthBloc.user.parentData.address),
     "name": TextEditingController(text: AuthBloc.user.name),
     "phone": TextEditingController(text: AuthBloc.user.phoneNumber),
     "id":
         TextEditingController(text: AuthBloc.user.nationalId?.toString() ?? ""),
-    "date": TextEditingController(text: AuthBloc.user.birthDate),
-    "academicYear": TextEditingController(text: AuthBloc.user.academicYear),
+    "date": TextEditingController(
+        text: (AuthBloc.user.birthDate ?? '').isEmpty
+            ? null
+            : AuthBloc.user.birthDate),
     "city": TextEditingController(text: AuthBloc.user.city),
     "weight":
         TextEditingController(text: (AuthBloc.user.weight ?? 0).toString()),
     "height":
         TextEditingController(text: (AuthBloc.user.height ?? 0).toString()),
     "experience": TextEditingController(text: AuthBloc.user.experience),
-    "startDate": TextEditingController(text: AuthBloc.user.startPlaying),
   };
 
   PlayType? playType = AuthBloc.user.playType;
   bool playedBefore = false;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -70,14 +72,17 @@ class UserInfoView extends StatelessWidget {
                       width: double.infinity,
                       child: Padding(
                         padding: PaddingManager.p15,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Hero(tag: "image", child: userImage(context)),
-                            Dividers.h10,
-                            signUpWidgets(context),
-                            Dividers.h10,
-                          ],
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Hero(tag: "image", child: userImage(context)),
+                              Dividers.h10,
+                              signUpWidgets(context),
+                              Dividers.h10,
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -212,10 +217,7 @@ class UserInfoView extends StatelessWidget {
                           children: [
                             customFormField("experience", "الخبرة",
                                 keyboardType: TextInputType.multiline,
-                                maxLines: 2),
-                            Dividers.h10,
-                            customDatePicker("startDate", "تاريخ بدء اللعب")
-                            // ,
+                                maxLines: 2), // ,
                           ],
                         ),
                       )
@@ -232,7 +234,7 @@ class UserInfoView extends StatelessWidget {
               keyboardType: TextInputType.phone),
           customFormField("parentId", "الرقم القومي لولي الامر",
               keyboardType: TextInputType.number),
-          customDatePicker("parentJob", "وظيفة ولي الامر"),
+          customFormField("parentJob", "وظيفة ولي الامر"),
           customFormField("parentAddress", "عنوان ولي الامر"),
         ].expand((widget) => [widget, const SizedBox(height: 10)]).toList(),
       );
@@ -245,7 +247,6 @@ class UserInfoView extends StatelessWidget {
           customFormField("id", "الرقم القومي",
               keyboardType: TextInputType.number),
           customDatePicker("date", "تاريخ الميلاد"),
-          customFormField("academicYear", "السنة الدراسية"),
           customFormField("city", "المدينة"),
         ].expand((widget) => [widget, const SizedBox(height: 10)]).toList(),
       );
@@ -256,6 +257,12 @@ class UserInfoView extends StatelessWidget {
         controller: controllers[controllerKey]!,
         title: title,
         maxLines: maxLines,
+        validator: (text) {
+          if (text == null || text.isEmpty) {
+            return 'لا يمكنك ترك الحقل فارغا';
+          }
+          return null;
+        },
         keyboardType: keyboardType,
       );
   Widget customNumericField(
@@ -324,10 +331,12 @@ class UserInfoView extends StatelessWidget {
                 height: 140,
                 child: ClipOval(
                   child: _image == null
-                      ? ErrorImage(
-                          AuthBloc.user.photoUrl ??
+                      ? AuthBloc.user.photoUrl == null
+                          ? const ErrorImage(
                               "https://www.shareicon.net/download/2016/06/27/787159_people_512x512.png",
-                          fit: BoxFit.fill)
+                              fit: BoxFit.fill)
+                          : Base64Image(AuthBloc.user.photoUrl!,
+                              fit: BoxFit.fill)
                       : Image.memory(_image!.readAsBytesSync()),
                 ),
               ),
@@ -359,11 +368,52 @@ class UserInfoView extends StatelessWidget {
       BlocBuilder<UserInfoBloc, InfoStates>(
         builder: (context, state) {
           return AnimatedCrossFade(
-              firstChild: ElevatedButton(
-                  onPressed: () {
-                    context.read<UserInfoBloc>().add(const RegisterDataEvent());
-                  },
-                  child: const Text("تعديل")),
+              firstChild: state.status == InfoStatus.done
+                  ? Text(
+                      "تم تعديل البيانات بنجاح",
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayLarge!
+                          .copyWith(fontSize: 20),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          if (_image != null ||
+                              AuthBloc.user.photoUrl != null) {
+                            context.read<UserInfoBloc>().add(RegisterDataEvent(
+                                AppUser(
+                                  id: AuthBloc.user.id,
+                                  photoUrl: convertImageToBase64(_image) ??
+                                      AuthBloc.user.photoUrl,
+                                  email: AuthBloc.user.email,
+                                  verified: AuthBloc.user.verified,
+                                  nationalId: controllers['id']!.text,
+                                  phoneNumber: controllers['phone']!.text,
+                                  name: controllers['name']!.text,
+                                  birthDate: controllers['date']!.text,
+                                  height:
+                                      double.parse(controllers['height']!.text),
+                                  weight: double.tryParse(
+                                      controllers['weight']!.text),
+                                  parentData: ParentData(
+                                      name: controllers['parentName']!.text,
+                                      id: controllers['parentPhone']!.text,
+                                      job: controllers['parentJob']!.text,
+                                      phone: controllers['parentPhone']!.text,
+                                      address: controllers['parentJob']!.text),
+                                  city: controllers['city']!.text,
+                                  playedBefore: playedBefore,
+                                  playType: playType,
+                                  experience: controllers['experience']!.text,
+                                ),
+                                AuthBloc.user.photoUrl != null));
+                          } else {
+                            showToast("لا تنسي رفع الصوره");
+                          }
+                        }
+                      },
+                      child: const Text("تعديل")),
               secondChild: const LoadingText(),
               crossFadeState: state.status == InfoStatus.loading
                   ? CrossFadeState.showSecond

@@ -13,6 +13,8 @@ class TournamentRepository {
     } on Failure catch (err) {
       return Left(err);
     } catch (_,__) {
+      print(_);
+      print(__);
       return const Left(Failure("حدث خطأ اثناء تحميل البيانات"));
     }
   }

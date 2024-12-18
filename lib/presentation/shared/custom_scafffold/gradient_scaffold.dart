@@ -7,18 +7,21 @@ import '../../resources/string_manager.dart';
 import 'widgets/gradient_container.dart';
 
 class GradientScaffold extends StatelessWidget {
-  const GradientScaffold({required this.child, this.action,this.title, super.key});
+  const GradientScaffold({required this.child, this.action,this.title,  this.floatingActionButton,
+    this.floatingActionButtonLocation,super.key});
   final Widget child;
   final Widget? action;
   final String? title;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
+  final Widget? floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
     return GradientContainer(
       SafeArea(
         child: Scaffold(
-          floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-          floatingActionButton: const CustomerSupportIcon(),
+          floatingActionButtonLocation: floatingActionButtonLocation??FloatingActionButtonLocation.startFloat,
+          floatingActionButton: floatingActionButton??const CustomerSupportIcon(),
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             centerTitle: true,

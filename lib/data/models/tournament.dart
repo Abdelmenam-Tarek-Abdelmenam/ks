@@ -24,7 +24,7 @@ class Tournament {
       this.description});
 
   factory Tournament.fromJson(Map<String, dynamic> json) {
-    print(json['id_champ']);
+    print(json['type_part']);
     return Tournament(
       id: json["id_champ"].toString(),
       img: json["photo_champ"],
@@ -33,7 +33,7 @@ class Tournament {
       isActive: json["type_reg"] == 1,
       address: json["addr_champ"],
       category: TournamentCategory.values[json["type_champ"] - 1],
-      type: TournamentType.values[json["type_part"] - 1],
+      type: json["type_part"]<=0 ?  TournamentType.values[0]: TournamentType.values[json["type_part"] - 1],
       description: " سعر الاشتراك ${json["price_champ"]}",
     );
   }
@@ -55,4 +55,4 @@ class Tournament {
 
 enum TournamentCategory { local, global }
 
-enum TournamentType { single, team, both }
+enum TournamentType { single, team, both  }

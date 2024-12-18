@@ -8,7 +8,6 @@ import '../../../resources/routes_manger.dart';
 import '../../../resources/string_manager.dart';
 import '../../../resources/styles_manager.dart';
 import '../../../shared/widget/dividers.dart';
-import '../../../shared/widget/rating_icons.dart';
 
 class GroundsWidget extends StatelessWidget {
    const GroundsWidget(this.grounds,{super.key});
@@ -117,7 +116,6 @@ class GroundDesign extends StatelessWidget {
               )
             ],
           ),
-          RatingIcons(item.rating),
           Center(
             child: OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
