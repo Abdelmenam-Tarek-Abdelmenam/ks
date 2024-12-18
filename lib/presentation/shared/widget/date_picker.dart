@@ -90,7 +90,6 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
     );
 
     if (selectedTime != null) {
-      // Format the time in HH:MM:SS format (or adjust according to your needs)
       final formattedTime = selectedTime.format(context);  // Format like "HH:mm AM/PM"
       widget.controller.text = formattedTime;
       setState(() {});  // Update the UI

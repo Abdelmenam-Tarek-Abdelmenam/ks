@@ -74,7 +74,6 @@ class PlayBloc extends Bloc<PlayEvent, PlayState> {
   Future<void> _registerGroundHandler(
       RegisterGroundsEvent event, Emitter emit) async {
     emit(state.copyWith(rGround: BlocStatus.gettingData));
-    print("here");
     Either<Failure, void> all = await _repository.registerGround(event.data);
     all.fold(
         (err) {
@@ -82,7 +81,7 @@ class PlayBloc extends Bloc<PlayEvent, PlayState> {
           emit(state.copyWith(rGround: BlocStatus.error));
         },
         (data) {
-          showToast("تم الاشتراك بنجاح" , type: ToastType.success);
+          showToast("تم ارسال  طلب الاشتراك بنجاح" , type: ToastType.success);
           emit(state.copyWith(
               rGround: BlocStatus.getData,
             ));

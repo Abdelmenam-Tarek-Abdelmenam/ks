@@ -14,6 +14,13 @@ class ChangeUserModeEvent extends UserInfoEvent {
   @override
   List<Object?> get props => [mode];
 }
+class ChangeUserEvent extends UserInfoEvent {
+  final bool isActive;
+  const ChangeUserEvent(this.isActive);
+
+  @override
+  List<Object?> get props => [isActive];
+}
 
 class RegisterDataEvent extends UserInfoEvent {
   final AppUser temp;
@@ -24,7 +31,6 @@ class RegisterDataEvent extends UserInfoEvent {
     Map<String, String> d =
         temp.toJson.map((k, v) => MapEntry(k, v.toString()));
     d.addAll({'mon3m_flag': isUpdate ? '2' : '1'});
-    print(isUpdate);
     return d;
   }
 

@@ -1,11 +1,9 @@
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:either_dart/either.dart';
 import 'package:equatable/equatable.dart';
 import 'package:final_projects/bloc/auth_bloc/auth_status_bloc.dart';
 import 'package:final_projects/presentation/shared/toast_helper.dart';
-import 'package:final_projects/presentation/shared/widget/error_image.dart';
 import '../../data/models/tournament.dart';
 import '../../domain_layer/repository_implementer/error_state.dart';
 import '../../domain_layer/repository_implementer/tournament_repo.dart';

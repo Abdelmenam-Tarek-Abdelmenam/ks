@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:either_dart/either.dart';
 import 'package:final_projects/bloc/auth_bloc/auth_status_bloc.dart';
@@ -12,17 +11,13 @@ import 'error_state.dart';
 class PlayRepository {
   Future<Either<Failure, List<Ground>>> getAllGrounds() async {
     try {
-      print("Here");
       List<Map<String, dynamic>> rowData = await ApiCall.instance.getGrounds();
-      print(rowData);
 
       List<Ground> data = rowData.map((e) => Ground.fromJson(e)).toList();
       return Right(data);
     } on Failure catch (err) {
       return Left(err);
     } catch (_, __) {
-      print(_);
-      print(__);
       return const Left(Failure("Error happened while getting grounds"));
     }
   }
@@ -34,8 +29,6 @@ class PlayRepository {
       List<Product> data = rowData.map((e) => Product.fromJson(e)).toList();
       return Right(data);
     } catch (_, __) {
-      print(_);
-      print(__);
       return const Left(Failure("Error happened while getting grounds"));
     }
   }
@@ -51,8 +44,6 @@ class PlayRepository {
     } on Failure catch (err) {
       return Left(err);
     } catch (_, __) {
-      print(_);
-      print(__);
       return const Left(Failure("حدث خطأ اثناء التسجيل"));
     }
   }

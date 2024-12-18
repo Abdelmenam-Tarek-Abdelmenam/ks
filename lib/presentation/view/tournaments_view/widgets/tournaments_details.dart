@@ -110,7 +110,6 @@ class _TournamentsDetailsState extends State<TournamentsDetails> {
           Center(
             child: BlocBuilder<TournamentBloc, TournamentState>(
               builder: (context, state) {
-                print("here");
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   child: finalWidget(context, state.registrationStatus),

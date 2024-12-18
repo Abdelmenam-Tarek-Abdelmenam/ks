@@ -47,8 +47,6 @@ class TournamentCard extends StatelessWidget {
   Widget design(BuildContext context) => InkWell(
         onTap: item.isActive
             ? () {
-          print("herr");
-          print(item.isRegistered);
                 if (item.isRegistered == null) {
                   context
                       .read<TournamentBloc>()

@@ -5,8 +5,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../bloc/matches_bloc/matches_bloc.dart';
 import '../../../bloc/status.dart';
-import '../../../data/models/matches.dart';
-import '../../../data/models/product.dart';
 import '../../resources/string_manager.dart';
 import '../../shared/custom_scafffold/sliding_scaffold.dart';
 import '../../shared/widget/error_widget.dart';
@@ -42,7 +40,6 @@ class MatchesView extends StatelessWidget {
               children: [
                 BlocBuilder<PlayBloc, PlayState>(
                   builder: (context, state) {
-                    print(state.type);
                     if (state.type == MatchesViewType.grounds) {
                       switch (state.groundStatus) {
                         case BlocStatus.idle:
@@ -57,7 +54,6 @@ class MatchesView extends StatelessWidget {
                           return const ErrorView();
                       }
                     } else if (state.type == MatchesViewType.store) {
-                      print(state.productsStatus);
                       switch (state.productsStatus) {
                         case BlocStatus.idle:
                           return StoreView(state.products);

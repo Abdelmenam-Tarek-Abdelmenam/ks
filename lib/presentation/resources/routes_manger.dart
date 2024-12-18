@@ -1,4 +1,3 @@
-import 'package:final_projects/data/models/product.dart';
 import 'package:final_projects/data/models/tournament.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +9,6 @@ import '../view/login_view/login_view.dart';
 import '../view/play_view/ground_details_view.dart';
 import '../view/play_view/matches_view.dart';
 
-import '../view/play_view/product_view.dart';
 import '../view/tournaments_view/tournaments_view.dart';
 import '../view/tournaments_view/widgets/tournaments_details.dart';
 import '../view/tournaments_view/widgets/video_show.dart';

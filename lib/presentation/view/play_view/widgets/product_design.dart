@@ -5,7 +5,6 @@ import '../../../../bloc/matches_bloc/matches_bloc.dart';
 import '../../../../data/models/product.dart';
 import '../../../../domain_layer/repository_implementer/play_repo.dart';
 import '../../../resources/asstes_manager.dart';
-import '../../../resources/routes_manger.dart';
 
 import '../../../resources/styles_manager.dart';
 import '../../../shared/widget/dividers.dart';
@@ -31,11 +30,11 @@ class ProductDesign extends StatelessWidget {
 
           // set up the AlertDialog
           AlertDialog alert = AlertDialog(
-            title: Text("تـاكيد الاشتراك"),
-            content: Text("هل انت متاكد انك تريد الاشتراك"),
+            title: const Text("تـاكيد الاشتراك"),
+            content: const Text("هل انت متاكد انك تريد الاشتراك"),
             actions: [
               TextButton(
-                child: Text("نعم"),
+                child: const Text("نعم"),
                 onPressed: () {
                   context.read<PlayBloc>().add(
                       RegisterProductsEvent(ProductRegister(

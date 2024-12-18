@@ -15,17 +15,18 @@ class ApiCall {
       {required String directory,
       required String target,
       Map<String, String>? data,
+        String? after,
       bool isGet = false}) async {
-    print('$_baseUrl/$directory/$target.php');
+    print('$_baseUrl/$directory/$target.php${after??''}');
     print(data);
 
     var request = http.MultipartRequest(
-        isGet ? 'GET' : 'POST', Uri.parse('$_baseUrl/$directory/$target.php'));
+        isGet ? 'GET' : 'POST', Uri.parse('$_baseUrl/$directory/$target.php${after??''}'));
+
     if (data != null) {
       request.fields.addAll(data);
     }
     http.StreamedResponse response = await request.send();
-    print(response.statusCode);
     if (response.statusCode == 200) {
       String data = await response.stream.bytesToString();
       print(data);
@@ -51,7 +52,7 @@ class ApiCall {
   Future<Map<String, dynamic>> signIn(Map<String, String> userData) async {
     await _preCheck();
 
-    Map<String, dynamic> data = await makeRequest(
+    dynamic data = await makeRequest(
         directory: _userDirectory, target: _logInTarget, data: userData);
 
     if (data[0] == "Error") {
@@ -157,8 +158,8 @@ class ApiCall {
 
       return data[0] == 'Success';
     } else {
-        throw Failure(data['Error']);
-      }
+      throw Failure(data['Error']);
+    }
   }
 
   Future<List<Map<String, dynamic>>> getProducts() async {
@@ -171,6 +172,20 @@ class ApiCall {
       return [];
     }
     return List<Map<String, dynamic>>.from(data['Data']);
+  }
+
+  Future<Map<String, dynamic>> getMyProducts() async {
+    await _preCheck();
+
+    Map<String, dynamic> data = await makeRequest(
+        directory: _subDirectory,
+        target: _checkProductsTarget, after : "?id_user=${AuthBloc.user.id}",
+        isGet: true);
+
+    if (data['Error'] == 'No active subscription found') {
+      return {};
+    }
+    return Map<String, dynamic>.from(data['Data']);
   }
 
   Future<bool> registerProduct(Map<String, String> userData) async {
@@ -216,4 +231,5 @@ const _checkGroundsTarget = "check_av";
 
 const _subDirectory = "subscriptions";
 const _getProductsTarget = "sub";
+const _checkProductsTarget = "check_sub";
 const _registerProductsTarget = "add";

@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import '../../resources/styles_manager.dart';
 
 class TopWidget extends StatelessWidget {
-  const TopWidget({required this.child, required this.bottom, Key? key})
-      : super(key: key);
+  const TopWidget({required this.child, required this.bottom, super.key});
   final Widget child;
   final double bottom;
 

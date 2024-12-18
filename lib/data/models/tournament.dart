@@ -24,7 +24,6 @@ class Tournament {
       this.description});
 
   factory Tournament.fromJson(Map<String, dynamic> json) {
-    print(json['type_part']);
     return Tournament(
       id: json["id_champ"].toString(),
       img: json["photo_champ"],

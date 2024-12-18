@@ -6,7 +6,7 @@ import '../../../resources/routes_manger.dart';
 import '../../../resources/string_manager.dart';
 
 class CustomerSupportIcon extends StatelessWidget {
-  const CustomerSupportIcon({Key? key}) : super(key: key);
+  const CustomerSupportIcon({super.key});
 
   @override
   Widget build(BuildContext context) {

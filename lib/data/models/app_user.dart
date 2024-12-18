@@ -86,7 +86,7 @@ class AppUser extends DefaultUser {
       'email_user': email,
       'name_user': name,
       'phone_user': phoneNumber.toString(),
-      'verified': verified?1 : 0,
+      'sub_type': verified?1 : 0,
       'youtube_link': youtubeLink,
     };
 
@@ -97,7 +97,7 @@ class AppUser extends DefaultUser {
 
   // Create from JSON
   factory AppUser.fromJson(Map<String, dynamic> json, {String? email}) {
-    print(json['phone_user']);
+
     return AppUser(
       youtubeLink: json['youtube_link'],
       id: (json['id']??json['id_user']).toString(),

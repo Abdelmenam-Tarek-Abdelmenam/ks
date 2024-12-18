@@ -6,8 +6,7 @@ class DefaultDropDownMenu extends StatelessWidget {
       this.prefix,
       required this.items,
       required this.onChanged,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   final String title;
   final List<DropdownMenuItem> items;
