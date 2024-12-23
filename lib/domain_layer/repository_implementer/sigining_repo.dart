@@ -28,7 +28,7 @@ class SigningRepository {
       }
     } on SignUpErrors catch (e) {
       return Left(Failure.fromError(e));
-    } catch (_) {
+    } catch (_,__) {
       return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
     }
   }
@@ -49,6 +49,8 @@ class SigningRepository {
     } on LoginErrors catch (e) {
       return Left(Failure.fromError(e));
     } catch (_, __) {
+      print(_);
+      print(__);
       return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
     }
   }

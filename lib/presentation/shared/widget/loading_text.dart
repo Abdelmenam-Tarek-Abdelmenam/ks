@@ -6,22 +6,25 @@ class LoadingText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "loading ",
-            style: Theme.of(context)
-                .textTheme
-                .displayLarge!
-                .copyWith(fontSize: 20),
-          ),
-          SpinKitThreeBounce(
-            color: Theme.of(context).colorScheme.onBackground,
-            size: 15,
-          )
-        ],
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "جاري التحميل ",
+              style: Theme.of(context)
+                  .textTheme
+                  .displayLarge!
+                  .copyWith(fontSize: 20 , color:  Theme.of(context).colorScheme.onPrimary),
+            ),
+            SpinKitThreeBounce(
+              color: Theme.of(context).colorScheme.onPrimary,
+              size: 15,
+            )
+          ],
+        ),
       ),
     );
   }

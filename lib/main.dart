@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/auth_bloc/auth_status_bloc.dart';
 import 'bloc/my_bloc_observer.dart';
 
+import 'bloc/sub_bloc/sub_bloc.dart';
 import 'bloc/user_info_bloc/user_info_status_bloc.dart';
 import 'data/data_sources/pref_repository.dart';
 import 'data/models/app_user.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => UserInfoBloc()),
           BlocProvider(create: (context) => TournamentBloc()),
           BlocProvider(create: (context) => PlayBloc()),
+          BlocProvider(create: (context) => SubBloc()),
         ],
         child: Directionality(
           textDirection: TextDirection.rtl,

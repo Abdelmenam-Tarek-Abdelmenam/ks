@@ -1,7 +1,6 @@
 import 'package:final_projects/bloc/auth_bloc/auth_status_bloc.dart';
 import 'package:flutter/material.dart';
 
-
 import '../../../resources/asstes_manager.dart';
 import '../../../resources/routes_manger.dart';
 import '../../../resources/string_manager.dart';
@@ -18,12 +17,16 @@ class HomeGrid extends StatelessWidget {
         route: Routes.user),
     GridItem(
         title: StringManger.match,
-        image:  AssetsManager.ta,
+        image: AssetsManager.ta,
         route: Routes.match),
     GridItem(
         title: StringManger.tournaments,
         image: LottieManager.tournaments,
         route: Routes.tournaments),
+    GridItem(
+        title: 'الاشتراكات',
+        image: LottieManager.sub,
+        route: Routes.sub),
     GridItem(
         title: StringManger.leaderBoard,
         image: LottieManager.youtube,

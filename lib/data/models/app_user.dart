@@ -26,7 +26,6 @@ class AppUser extends DefaultUser {
   String? nationalId;
   String? birthDate;
   String? city;
-  final String youtubeLink;
   ParentData parentData;
 
   double? weight;
@@ -34,6 +33,11 @@ class AppUser extends DefaultUser {
   bool? playedBefore;
   String? experience;
   PlayType? playType;
+
+  final String youtubeLink;
+  final String phoneLink;
+  final String emailLink;
+
 
   @override
   String toString() {
@@ -43,6 +47,8 @@ class AppUser extends DefaultUser {
   AppUser({
     required this.id,
     required this.youtubeLink,
+    required this.phoneLink,
+    required this.emailLink,
     this.photoUrl,
     this.phoneNumber,
     this.nationalId,
@@ -62,12 +68,12 @@ class AppUser extends DefaultUser {
   // Factory method for an empty instance
   factory AppUser.empty() {
     return AppUser(
-        id: '',
         name: '',
+        id: '',
         email: '',
         youtubeLink: '',
         verified: false,
-        parentData: ParentData.empty());
+        parentData: ParentData.empty(), phoneLink: '', emailLink: '');
   }
 
   // Convert to JSON
@@ -88,6 +94,8 @@ class AppUser extends DefaultUser {
       'phone_user': phoneNumber.toString(),
       'sub_type': verified?1 : 0,
       'youtube_link': youtubeLink,
+      'phone_link': youtubeLink,
+      'email_link': youtubeLink,
     };
 
     data.addAll(parentData.toJson);
@@ -100,6 +108,8 @@ class AppUser extends DefaultUser {
 
     return AppUser(
       youtubeLink: json['youtube_link'],
+      phoneLink: json['phone_link']??'01201838240',
+      emailLink: json['email_link']??'moneam@ebahy@gmail.com',
       id: (json['id']??json['id_user']).toString(),
       name: json['name_user'],
       nationalId: json['NID_user'],

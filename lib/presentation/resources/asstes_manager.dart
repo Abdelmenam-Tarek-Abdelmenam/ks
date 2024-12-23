@@ -27,4 +27,5 @@ class LottieManager {
   static const matches = "${lottiePath}matches.json";
   static const location = "${lottiePath}location.zip";
   static const youtube = "${lottiePath}youtube.json";
+  static const sub = "${lottiePath}sub.json";
 }

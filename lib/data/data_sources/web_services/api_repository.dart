@@ -17,8 +17,8 @@ class ApiCall {
       Map<String, String>? data,
         String? after,
       bool isGet = false}) async {
-    // print('$_baseUrl/$directory/$target.php${after??''}');
-    // print(data);
+    print('$_baseUrl/$directory/$target.php${after??''}');
+    print(data);
 
     var request = http.MultipartRequest(
         isGet ? 'GET' : 'POST', Uri.parse('$_baseUrl/$directory/$target.php${after??''}'));
@@ -29,7 +29,7 @@ class ApiCall {
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       String data = await response.stream.bytesToString();
-      // print(data);
+      print(data);
       return json.decode(data);
     } else {
       throw Failure(response.reasonPhrase ?? "حدث خطأ اثناء الاتصال بالخادم");
@@ -188,6 +188,21 @@ class ApiCall {
     return Map<String, dynamic>.from(data['Data']);
   }
 
+  Future<Map<String, dynamic>> getSub() async {
+    await _preCheck();
+
+    Map<String, dynamic> data = await makeRequest(
+        directory: _subDirectory,
+        target: _getAllTarget,
+        data: {'id_user' : AuthBloc.user.id},
+        isGet: true);
+
+    if (data['Error'] == 'No active subscription found') {
+      return {};
+    }
+    return Map<String, dynamic>.from(data['Data']);
+  }
+
   Future<bool> registerProduct(Map<String, String> userData) async {
     await _preCheck();
 
@@ -233,3 +248,5 @@ const _subDirectory = "subscriptions";
 const _getProductsTarget = "sub";
 const _checkProductsTarget = "check_sub";
 const _registerProductsTarget = "add";
+const _getAllTarget = "get_all";
+

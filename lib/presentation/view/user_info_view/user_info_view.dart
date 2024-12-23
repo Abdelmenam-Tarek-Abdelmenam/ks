@@ -385,6 +385,8 @@ class UserInfoView extends StatelessWidget {
                                 AppUser(
                                   id: AuthBloc.user.id,
                                   youtubeLink: AuthBloc.user.youtubeLink,
+                                  phoneLink: AuthBloc.user.phoneLink,
+                                  emailLink: AuthBloc.user.emailLink,
                                   photoUrl: convertImageToBase64(_image) ??
                                       AuthBloc.user.photoUrl,
                                   email: AuthBloc.user.email,
