@@ -39,8 +39,9 @@ class SlidingScaffold extends StatelessWidget {
           resizeToAvoidBottomInset: true,
           backgroundColor: Colors.transparent,
           appBar: AppBar(
+
             centerTitle: true,
-            backgroundColor: Colors.transparent,
+            backgroundColor:             Theme.of(context).colorScheme.onSurface,
             elevation: 0,
             actions: action == null ? null : [action!],
             title: Text(title),
@@ -58,7 +59,7 @@ class SlidingScaffold extends StatelessWidget {
   }
 
   Widget bottomBar(BuildContext context) => BottomAppBar(
-        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.65),
+        color: Theme.of(context).colorScheme.onPrimary.withOpacity(0.8),
         shape: const CircularNotchedRectangle(), //shape of notch
         notchMargin: 4,
         child: Padding(

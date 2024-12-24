@@ -15,7 +15,7 @@ class GridItemDesign extends StatelessWidget {
     double width = MediaQuery.of(context).size.width / 2 - 20;
     if (width.isNegative) return Container();
     return SizedBox(
-      width: width > 200 ? 200 : width,
+      width: width > 200 ? 200: (item.route.contains('sub') ? width*2:width) ,
       child: Padding(
         padding: PaddingManager.p4,
         child: ClipRRect(

@@ -43,19 +43,41 @@ class SubView extends StatelessWidget {
                         if (state.type == SubViewType.talents) {
                           return Expanded(
                             child: ListView.builder(
-                                itemBuilder: (BuildContext context, int i) =>
-                                    const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: ListTile(
-                                        title: Text("data"),
-                                      ),
-                                    ),
-                              itemCount: 30,
-
+                              itemBuilder: (BuildContext context, int i) =>
+                                  const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Directionality(
+                                  textDirection: TextDirection.rtl,
+                                  child: ListTile(
+                                    title: Text("اسم الاشتراك"),
+                                    subtitle: Text("تاريخ انتهاء الاشتراك"),
+                                    leading: Icon(Icons.sports_football),
+                                    trailing: Text("سعر الاشتراك"),
+                                  ),
+                                ),
+                              ),
+                              itemCount: 5,
                             ),
                           );
                         } else {
-                          return const Text("Champ.");
+                          return Expanded(
+                            child: ListView.builder(
+                              itemBuilder: (BuildContext context, int i) =>
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Directionality(
+                                  textDirection: TextDirection.rtl,
+                                  child: ListTile(
+                                    title: Text("اسم البطوله"),
+                                    subtitle: Text("موعد البطوله"),
+                                    leading: Icon(Icons.sports_soccer),
+                                    trailing: Text("سعر الاشتراك"),
+                                  ),
+                                ),
+                              ),
+                              itemCount: 5,
+                            ),
+                          );
                         }
                     }
                   },

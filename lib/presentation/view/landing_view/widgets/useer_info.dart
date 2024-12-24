@@ -25,17 +25,20 @@ class UserInfo extends StatelessWidget {
               alignment: Alignment.center,
               child: Container(
                 height: 200,
+                width: 200,
                 padding: const EdgeInsets.only(bottom: 18.0),
-                child: Hero(
-                  tag: "image",
-                  child: AuthBloc.user.photoUrl == null
-                      ? const ErrorImage(
-                          "https://www.shareicon.net/download/2016/06/27/787159_people_512x512.png",
-                          fit: BoxFit.fill)
-                      : Base64Image(
-                          AuthBloc.user.photoUrl!,
-                          height: 200,
-                        ),
+                child: ClipOval(
+                  child: Hero(
+                    tag: "image",
+                    child: AuthBloc.user.photoUrl == null
+                        ? const ErrorImage(
+                            "https://www.shareicon.net/download/2016/06/27/787159_people_512x512.png",
+                            fit: BoxFit.fill)
+                        : Base64Image(
+                            AuthBloc.user.photoUrl!,
+                            height: 200,
+                          ),
+                  ),
                 ),
               ),
             ),

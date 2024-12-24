@@ -48,7 +48,7 @@ class LandingView extends StatelessWidget {
         },
       );
 
-  Widget homePageView(BuildContext context) => Column(
+  Widget homePageView(BuildContext context) => ListView(
         children: [
           const TopWidget(bottom: 15, child: UserInfo()),
           Dividers.h15,

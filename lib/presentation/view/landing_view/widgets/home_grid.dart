@@ -23,24 +23,23 @@ class HomeGrid extends StatelessWidget {
         title: StringManger.tournaments,
         image: LottieManager.tournaments,
         route: Routes.tournaments),
-    GridItem(
-        title: 'الاشتراكات',
-        image: LottieManager.sub,
-        route: Routes.sub),
+
     GridItem(
         title: StringManger.leaderBoard,
         image: LottieManager.youtube,
         route: AuthBloc.user.youtubeLink),
+    GridItem(
+        title: 'الاشتراكات',
+        image: LottieManager.sub,
+        route: Routes.sub),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: PaddingManager.p10,
-        child: Center(
-          child: Wrap(children: items.map((e) => GridItemDesign(e)).toList()),
-        ),
+    return Padding(
+      padding: PaddingManager.p10,
+      child: Center(
+        child: Wrap(children: items.map((e) => GridItemDesign(e)).toList()),
       ),
     );
   }
