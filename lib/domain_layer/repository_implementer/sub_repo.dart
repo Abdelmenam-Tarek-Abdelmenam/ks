@@ -26,8 +26,8 @@ class SubData {
   SubData(this.champ, this.talents);
 
   factory SubData.fromJson(Map<String, dynamic> data) {
-    List<dynamic> champTemp = data['champ'];
-    List<dynamic> talentsTemp = data['sub'];
+    List<dynamic> champTemp = data['champ']??[];
+    List<dynamic> talentsTemp = data['sub']??[];
 
     return SubData(champTemp.map((e) => Tournament.fromJson(e)).toList(),talentsTemp.map((e) => Subscription.fromJson(e)).toList());
   }
