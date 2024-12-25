@@ -49,8 +49,6 @@ class SigningRepository {
     } on LoginErrors catch (e) {
       return Left(Failure.fromError(e));
     } catch (_, __) {
-      print(_);
-      print(__);
       return const Left(Failure("حدث خطأ اثناء طلب المعلومات"));
     }
   }

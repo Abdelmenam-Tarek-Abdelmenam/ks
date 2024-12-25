@@ -27,6 +27,8 @@ class ApiCall {
       request.fields.addAll(data);
     }
     http.StreamedResponse response = await request.send();
+
+    print(response.statusCode);
     if (response.statusCode == 200) {
       String data = await response.stream.bytesToString();
       print(data);
@@ -192,15 +194,15 @@ class ApiCall {
     await _preCheck();
 
     Map<String, dynamic> data = await makeRequest(
-        directory: _subDirectory,
+        directory: _userDirectory,
         target: _getAllTarget,
-        data: {'id_user' : AuthBloc.user.id},
+        after :"?id_user=${AuthBloc.user.id}",
         isGet: true);
 
     if (data['Error'] == 'No active subscription found') {
       return {};
     }
-    return Map<String, dynamic>.from(data['Data']);
+    return Map<String, dynamic>.from(data);
   }
 
   Future<bool> registerProduct(Map<String, String> userData) async {
@@ -233,6 +235,8 @@ const _signUpTarget = "signup";
 const _logInTarget = "login";
 const _getProfileTarget = "check_profile";
 const _updateProfileTarget = "user_profile";
+const _getAllTarget = "all_sub";
+
 
 const _tournamentDirectory = "championships";
 const _getTournamentTarget = "view";
@@ -248,5 +252,4 @@ const _subDirectory = "subscriptions";
 const _getProductsTarget = "sub";
 const _checkProductsTarget = "check_sub";
 const _registerProductsTarget = "add";
-const _getAllTarget = "get_all";
 

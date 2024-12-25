@@ -1,4 +1,6 @@
 import 'package:final_projects/bloc/sub_bloc/sub_bloc.dart';
+import 'package:final_projects/presentation/view/sub_view/widgets/champ_view.dart';
+import 'package:final_projects/presentation/view/sub_view/widgets/talents_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -28,63 +30,26 @@ class SubView extends StatelessWidget {
               SubBloc bloc = context.read<SubBloc>();
               bloc.add(const GeSubEvent());
             },
-            child: Column(
+            child: ListView(
               children: [
                 BlocBuilder<SubBloc, SubState>(
                   builder: (context, state) {
                     switch (state.status) {
                       case BlocStatus.gettingData:
                         return const LoadingText();
-                      // case BlocStatus.error:
-                      //   endRefresh();
-                      //   return const ErrorView();
+                      case BlocStatus.error:
+                        // endRefresh();
+                        return const ErrorView();
                       default:
                         endRefresh();
                         if (state.type == SubViewType.talents) {
-                          return Expanded(
-                            child: ListView.builder(
-                              itemBuilder: (BuildContext context, int i) =>
-                                  const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Directionality(
-                                  textDirection: TextDirection.rtl,
-                                  child: ListTile(
-                                    title: Text("اسم الاشتراك"),
-                                    subtitle: Text("تاريخ انتهاء الاشتراك"),
-                                    leading: Icon(Icons.sports_football),
-                                    trailing: Text("سعر الاشتراك"),
-                                  ),
-                                ),
-                              ),
-                              itemCount: 5,
-                            ),
-                          );
+                          return TalentsView(state.data.talents);
                         } else {
-                          return Expanded(
-                            child: ListView.builder(
-                              itemBuilder: (BuildContext context, int i) =>
-                              const Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Directionality(
-                                  textDirection: TextDirection.rtl,
-                                  child: ListTile(
-                                    title: Text("اسم البطوله"),
-                                    subtitle: Text("موعد البطوله"),
-                                    leading: Icon(Icons.sports_soccer),
-                                    trailing: Text("سعر الاشتراك"),
-                                  ),
-                                ),
-                              ),
-                              itemCount: 5,
-                            ),
-                          );
+                          return ChampView(state.data.champ);
                         }
                     }
                   },
                 ),
-                // const SizedBox(
-                //   height: 200,
-                // ),
               ],
             ),
           ),

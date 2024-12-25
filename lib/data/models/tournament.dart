@@ -8,9 +8,9 @@ class Tournament {
   final TournamentCategory category;
   final TournamentType type;
   final bool isActive;
-  final List<String> types = ['اعتيادي' , 'مخفض'];
+  final List<String> types = ['اعتيادي', 'مخفض'];
 
-  Map<String,dynamic> ? isRegistered;
+  Map<String, dynamic>? isRegistered;
 
   Tournament(
       {required this.img,
@@ -21,20 +21,25 @@ class Tournament {
       required this.category,
       required this.address,
       required this.type,
+      this.isRegistered,
       this.description});
 
   factory Tournament.fromJson(Map<String, dynamic> json) {
     return Tournament(
-      id: json["id_champ"].toString(),
-      img: json["photo_champ"],
-      name: json["name_champ"],
-      date: json["start_date"],
-      isActive: json["type_reg"] == 1,
-      address: json["addr_champ"],
-      category: TournamentCategory.values[json["type_champ"] - 1],
-      type: json["type_part"]<=0 ?  TournamentType.values[0]: TournamentType.values[json["type_part"] - 1],
-      description: " سعر الاشتراك ${json["price_champ"]}",
-    );
+        id: json["id_champ"].toString(),
+        img: json["photo_champ"],
+        name: json["name_champ"],
+        date: json["start_date"],
+        isActive: json["type_reg"] == 1,
+        isRegistered: json["team_name"] != null ? json : null,
+        address: json["addr_champ"],
+        category: TournamentCategory.values[json["type_champ"] - 1],
+        type: json["type_part"] <= 0
+            ? TournamentType.values[0]
+            : TournamentType.values[json["type_part"] - 1],
+        description:
+            " سعر الاشتراك ${json["price_champ"].toString()}" // "+ ' , ' +json["note_champ"]??''}",
+        );
   }
 
   Map<String, dynamic> get toJson => {
@@ -54,4 +59,4 @@ class Tournament {
 
 enum TournamentCategory { local, global }
 
-enum TournamentType { single, team, both  }
+enum TournamentType { single, team, both }
