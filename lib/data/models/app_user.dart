@@ -94,8 +94,8 @@ class AppUser extends DefaultUser {
       'phone_user': phoneNumber.toString(),
       'sub_type': verified?1 : 0,
       'youtube_link': youtubeLink,
-      'phone_link': youtubeLink,
-      'email_link': youtubeLink,
+      'phone_link': phoneLink,
+      'email_link': emailLink,
     };
 
     data.addAll(parentData.toJson);
