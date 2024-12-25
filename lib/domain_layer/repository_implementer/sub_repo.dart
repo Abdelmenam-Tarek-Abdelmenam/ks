@@ -12,11 +12,8 @@ class SubRepository {
       SubData data = SubData.fromJson(rowData);
       return Right(data);
     } on Failure catch (err) {
-      print(err);
       return Left(err);
     } catch (_, __) {
-      print(_);
-      print(__);
       return const Left(Failure("Error happened while getting grounds"));
     }
   }
@@ -52,5 +49,5 @@ class Subscription {
   });
 
   factory Subscription.fromJson(Map<String, dynamic> data) => Subscription(
-      name: data['name_sub'], endDate: data['end_date'], price: '${data['price_sub']} جنيه', sessionsNum: data['num_session'].toString());
+      name: data['name_sub'], endDate: data['end_date'], price:  " سعر الاشتراك ${data["price_sub"].toString()}", sessionsNum: data['num_session'].toString());
 }
